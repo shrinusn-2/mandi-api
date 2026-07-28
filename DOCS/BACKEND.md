@@ -7,7 +7,7 @@ This document details the backend REST API implementation, database schema, data
 ## 1. Monorepo Location & Tech Stack
 
 - **Directory**: `backend/`
-- **Runtime**: Node.js 20.x / 22.x
+- **Runtime**: Node.js 22.x (native WebSocket requirement for Supabase v2)
 - **Framework**: Express 4.x
 - **Database**: Supabase (PostgreSQL)
 - **Key Packages**: `@supabase/supabase-js`, `cors`, `express-rate-limit`, `dotenv`
@@ -23,11 +23,7 @@ backend/
 │   ├── index.js              # Express app, CORS, rate limiter, route mounting
 │   ├── db.js                 # Supabase client singleton using SUPABASE_SERVICE_KEY
 │   ├── validators.js         # Input validation & error envelope helpers
-│   └── controllers/
-│       ├── states.js         # GET /v1/states controller
-│       ├── commodities.js    # GET /v1/commodities controller (supports state & market filtering)
-│       ├── markets.js        # GET /v1/markets controller
-│       └── prices.js         # GET /v1/prices & GET /v1/prices/history controller
+│   └── controllers/          # Endpoint handlers (states, commodities, markets, prices)
 ├── scripts/
 │   ├── states.config.js     # Supported states configuration & canonical state mapper
 │   └── ingest.js            # Ingestion script with pagination, pacing & deduplication
@@ -70,7 +66,7 @@ ALTER TABLE mandi_prices DISABLE ROW LEVEL SECURITY;
 ## 4. Ingestion Pipeline (`scripts/ingest.js`)
 
 - **Data Source**: `data.gov.in` resource `9ef84268-d588-465a-a308-a864a43d0070`
-- **Trigger**: GitHub Actions cron (`0 15 * * *` daily at 15:00 UTC / 8:30 PM IST)
+- **Trigger**: GitHub Actions cron (`0 15 * * *` daily at 15:00 UTC / 8:30 PM IST) running on Node 22.x
 - **Features**:
   - Paged fetching (`limit=100`, `offset` pagination).
   - Exponential backoff retry logic (up to 5 attempts).

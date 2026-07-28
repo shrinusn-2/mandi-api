@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import CodeSnippet from '../components/CodeSnippet';
 import JsonViewer from '../components/JsonViewer';
+import AiSpecButton from '../components/AiSpecButton';
 import { API_BASE_URL } from '../config';
 
 export default function DocsPage() {
@@ -24,6 +25,7 @@ export default function DocsPage() {
         <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
           {[
             { id: 'overview', label: 'Overview & Base URL' },
+            { id: 'ai-prompt', label: '🤖 Build With AI' },
             { id: 'states', label: 'GET /v1/states' },
             { id: 'commodities', label: 'GET /v1/commodities' },
             { id: 'markets', label: 'GET /v1/markets' },
@@ -77,6 +79,11 @@ export default function DocsPage() {
           </div>
         </section>
 
+        {/* AI Integration Spec Banner */}
+        <section id="ai-prompt">
+          <AiSpecButton />
+        </section>
+
         {/* GET /v1/states */}
         <section id="states" className="glass-card">
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
@@ -100,7 +107,7 @@ export default function DocsPage() {
             <code style={{ fontSize: '1.1rem', fontWeight: 600 }}>/v1/commodities</code>
           </div>
           <p style={{ color: 'var(--text-secondary)', marginBottom: '1rem' }}>
-            Returns a list of distinct commodities/crops. Optionally scoped to a specific state.
+            Returns a list of distinct commodities/crops. Optionally scoped to a specific state or market.
           </p>
 
           <table style={{ width: '100%', margin: '1rem 0', fontSize: '0.88rem', borderCollapse: 'collapse' }}>
@@ -118,6 +125,12 @@ export default function DocsPage() {
                 <td>String</td>
                 <td>Optional</td>
                 <td>Filter commodities by state name (e.g. Maharashtra)</td>
+              </tr>
+              <tr>
+                <td style={{ padding: '0.5rem 0', fontFamily: 'var(--font-mono)' }}>market</td>
+                <td>String</td>
+                <td>Optional</td>
+                <td>Filter commodities by specific APMC market (e.g. Katol APMC)</td>
               </tr>
             </tbody>
           </table>
@@ -168,7 +181,7 @@ export default function DocsPage() {
             <code style={{ fontSize: '1.1rem', fontWeight: 600 }}>/v1/prices</code>
           </div>
           <p style={{ color: 'var(--text-secondary)', marginBottom: '1rem' }}>
-            Query latest daily mandi prices. Requires either <code>state</code> OR <code>commodity</code>.
+            Query daily mandi prices. Requires either <code>state</code> OR <code>commodity</code>.
           </p>
           <CodeSnippet path="/v1/prices?state=Maharashtra&commodity=Onion" />
         </section>
@@ -182,7 +195,7 @@ export default function DocsPage() {
             <code style={{ fontSize: '1.1rem', fontWeight: 600 }}>/v1/prices/history</code>
           </div>
           <p style={{ color: 'var(--text-secondary)', marginBottom: '1rem' }}>
-            Retrieve price history trends over date ranges. Aggregates average prices across markets if <code>market</code> parameter is omitted.
+            Retrieve price history trends over date ranges. If <code>market</code> is omitted, returns average state-wide modal prices per date.
           </p>
           <CodeSnippet path="/v1/prices/history?state=Maharashtra&commodity=Onion" />
         </section>

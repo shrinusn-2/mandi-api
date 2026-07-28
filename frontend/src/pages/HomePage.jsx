@@ -3,6 +3,7 @@ import { ArrowRight, Database, Zap, Globe, Sparkles, CheckCircle2, RefreshCw, Al
 import CodeSnippet from '../components/CodeSnippet';
 import RegionSelector from '../components/RegionSelector';
 import JsonViewer from '../components/JsonViewer';
+import AiSpecButton from '../components/AiSpecButton';
 import { API_BASE_URL } from '../config';
 
 export default function HomePage({ setActiveTab }) {
@@ -15,7 +16,6 @@ export default function HomePage({ setActiveTab }) {
     setLoading(true);
     setIsWakingUp(false);
     
-    // Set 2.5s timer for warm-up warning notice
     const timer = setTimeout(() => {
       setIsWakingUp(true);
     }, 2500);
@@ -88,6 +88,11 @@ export default function HomePage({ setActiveTab }) {
             Read API Docs
           </button>
         </div>
+      </div>
+
+      {/* AI Spec Banner */}
+      <div style={{ maxWidth: '900px', margin: '0 auto 3rem auto' }}>
+        <AiSpecButton />
       </div>
 
       {/* Interactive Live Demo Widget */}

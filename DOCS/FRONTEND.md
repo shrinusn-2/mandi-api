@@ -27,12 +27,15 @@ frontend/
 │   │   ├── CustomSelect.jsx    # Searchable glassmorphism dropdown with search bar & checkmarks
 │   │   ├── RegionSelector.jsx  # Searchable state selector dropdown
 │   │   ├── CodeSnippet.jsx     # Multi-language code snippet generator (cURL, JS, Python, Go)
+│   │   ├── AiSpecButton.jsx    # "Build with AI" prompt spec copy & .md download component
 │   │   ├── JsonViewer.jsx      # Syntax-highlighted JSON payload viewer
 │   │   └── PriceChart.jsx     # Chart.js line graph for price trend visualizer
+│   ├── data/
+│   │   └── aiSpec.js           # Static high-density LLM prompt specification string
 │   ├── pages/
-│   │   ├── HomePage.jsx        # Hero landing page, quick start, interactive live demo
+│   │   ├── HomePage.jsx        # Hero landing page with AI spec banner & live demo
 │   │   ├── PlaygroundPage.jsx  # Cascading request console (State -> Market -> Commodity)
-│   │   ├── DocsPage.jsx        # Complete API reference documentation with sidebar nav
+│   │   ├── DocsPage.jsx        # Complete API reference documentation with sidebar nav & AI spec
 │   │   └── StatusPage.jsx      # System status & operational metrics dashboard
 │   ├── config.js               # Dynamic base URL resolution (VITE_API_URL || localhost:3000)
 │   ├── App.jsx                 # Main SPA view switcher shell
@@ -46,6 +49,11 @@ frontend/
 ---
 
 ## 3. Key Components & Specifications
+
+### `AiSpecButton.jsx` & `aiSpec.js`
+- Banner component featured on `HomePage` and `DocsPage`.
+- Contains a structured Markdown prompt specification optimized for LLMs (*ChatGPT, Claude, Gemini, Antigravity*).
+- Features **"Copy Spec for AI"** (copies to clipboard) and **"Download .md"** (downloads `MANDI-API-SPEC.md`).
 
 ### `PlaygroundPage.jsx`
 - **Cascading Selection Order**:
@@ -61,7 +69,7 @@ frontend/
 - Features search filtering, sublabel/district badges, checkmark selection, and click-outside closing.
 
 ### `DocsPage.jsx`
-- Complete API reference documentation with sticky sidebar section navigation (`Overview`, `states`, `commodities`, `markets`, `prices`, `history`, `errors`), parameter tables, and syntax-highlighted code snippets.
+- Complete API reference documentation with sticky sidebar section navigation (`Overview`, `states`, `commodities`, `markets`, `prices`, `history`, `errors`), parameter tables, syntax-highlighted code snippets, and `AiSpecButton`.
 
 ### `StatusBadge.jsx`
 - Sends dynamic health check pings to `${API_BASE_URL}/health`.

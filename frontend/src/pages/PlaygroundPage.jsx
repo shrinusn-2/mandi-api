@@ -12,13 +12,58 @@ export default function PlaygroundPage() {
   const [commodity, setCommodity] = useState('Onion');
   const [market, setMarket] = useState('');
   const [endpoint, setEndpoint] = useState('/v1/prices');
+
+  // Dynamic dropdown options fetched from backend
+  const [commoditiesList, setCommoditiesList] = useState([]);
+  const [marketsList, setMarketsList] = useState([]);
+  const [loadingOptions, setLoadingOptions] = useState(false);
+
+  // Request execution state
   const [loading, setLoading] = useState(false);
   const [isWakingUp, setIsWakingUp] = useState(false);
   const [responseData, setResponseData] = useState(null);
   const [historyData, setHistoryData] = useState(null);
-  const [activeViewTab, setActiveViewTab] = useState('json'); // 'json' | 'chart'
+  const [activeViewTab, setActiveViewTab] = useState('json');
   const [responseStatus, setResponseStatus] = useState(null);
   const [latency, setLatency] = useState(null);
+
+  // Fetch commodities and markets dynamically whenever state changes
+  useEffect(() => {
+    async function fetchStateOptions() {
+      setLoadingOptions(true);
+      try {
+        const [commRes, mktRes] = await Promise.all([
+          fetch(`${API_BASE_URL}/v1/commodities?state=${encodeURIComponent(selectedState)}`),
+          fetch(`${API_BASE_URL}/v1/markets?state=${encodeURIComponent(selectedState)}`)
+        ]);
+
+        const commData = await commRes.json();
+        const mktData = await mktRes.json();
+
+        if (commData.success && Array.isArray(commData.data)) {
+          setCommoditiesList(commData.data);
+          // Auto-select first commodity if current commodity isn't in list
+          if (commData.data.length > 0 && !commData.data.includes(commodity)) {
+            setCommodity(commData.data[0]);
+          }
+        } else {
+          setCommoditiesList([]);
+        }
+
+        if (mktData.success && Array.isArray(mktData.data)) {
+          setMarketsList(mktData.data);
+        } else {
+          setMarketsList([]);
+        }
+      } catch (err) {
+        console.error('Error fetching state commodities/markets:', err);
+      } finally {
+        setLoadingOptions(false);
+      }
+    }
+
+    fetchStateOptions();
+  }, [selectedState]);
 
   const buildQueryPath = () => {
     let url = endpoint;
@@ -55,7 +100,7 @@ export default function PlaygroundPage() {
 
       if (endpoint === '/v1/prices/history' && data.success) {
         setHistoryData(data.data);
-        setActiveViewTab('chart'); // auto switch to chart view on history endpoint
+        setActiveViewTab('chart');
       } else {
         setHistoryData(null);
         setActiveViewTab('json');
@@ -76,7 +121,7 @@ export default function PlaygroundPage() {
 
   useEffect(() => {
     handleExecute();
-  }, [endpoint]);
+  }, [endpoint, selectedState, commodity, market]);
 
   return (
     <div style={{ padding: '2rem 0' }}>
@@ -126,7 +171,7 @@ export default function PlaygroundPage() {
       </div>
 
       <div className="grid-2" style={{ marginBottom: '2rem', alignItems: 'start' }}>
-        {/* Left Column: Query Request Controls */}
+        {/* Left Column: Selectable Query Request Controls */}
         <div className="glass-card" style={{ borderRadius: '0 0 16px 16px', borderTop: '1px solid var(--border-subtle)' }}>
           <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Filter size={18} color="var(--accent-emerald)" /> Request Builder
@@ -155,21 +200,21 @@ export default function PlaygroundPage() {
             </div>
           </div>
 
-          {/* State selector component */}
+          {/* State selector */}
           <div style={{ marginBottom: '1.25rem' }}>
             <RegionSelector selectedState={selectedState} onSelectState={setSelectedState} />
           </div>
 
-          {/* Commodity field */}
+          {/* Selectable Commodity Dropdown */}
           <div style={{ marginBottom: '1.25rem' }}>
-            <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem', fontWeight: 600 }}>
-              Commodity / Crop Name
+            <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem', fontWeight: 600 }}>
+              <span>Commodity / Crop ({commoditiesList.length} available)</span>
+              {loadingOptions && <RefreshCw size={12} className="spin" color="var(--accent-emerald)" />}
             </label>
-            <input
-              type="text"
+            <select
               value={commodity}
               onChange={(e) => setCommodity(e.target.value)}
-              placeholder="e.g. Onion, Wheat, Potato"
+              disabled={loadingOptions || commoditiesList.length === 0}
               style={{
                 width: '100%',
                 padding: '0.65rem 0.85rem',
@@ -178,21 +223,27 @@ export default function PlaygroundPage() {
                 borderRadius: '8px',
                 color: '#fff',
                 fontFamily: 'var(--font-sans)',
-                fontSize: '0.9rem'
+                fontSize: '0.9rem',
+                cursor: 'pointer'
               }}
-            />
+            >
+              {commoditiesList.map(c => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+              {commoditiesList.length === 0 && <option value="">No crops available</option>}
+            </select>
           </div>
 
-          {/* Market optional filter */}
+          {/* Selectable Market Dropdown */}
           <div style={{ marginBottom: '1.5rem' }}>
-            <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem', fontWeight: 600 }}>
-              Specific Market / Mandi (Optional)
+            <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem', fontWeight: 600 }}>
+              <span>Specific Market / Mandi ({marketsList.length} active)</span>
+              {loadingOptions && <RefreshCw size={12} className="spin" color="var(--accent-emerald)" />}
             </label>
-            <input
-              type="text"
+            <select
               value={market}
               onChange={(e) => setMarket(e.target.value)}
-              placeholder="e.g. Nagpur APMC"
+              disabled={loadingOptions}
               style={{
                 width: '100%',
                 padding: '0.65rem 0.85rem',
@@ -201,9 +252,17 @@ export default function PlaygroundPage() {
                 borderRadius: '8px',
                 color: '#fff',
                 fontFamily: 'var(--font-sans)',
-                fontSize: '0.9rem'
+                fontSize: '0.9rem',
+                cursor: 'pointer'
               }}
-            />
+            >
+              <option value="">All Markets (State Aggregate)</option>
+              {marketsList.map(m => (
+                <option key={m.market} value={m.market}>
+                  {m.market} ({m.district})
+                </option>
+              ))}
+            </select>
           </div>
 
           <button 

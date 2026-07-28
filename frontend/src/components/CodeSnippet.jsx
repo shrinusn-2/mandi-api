@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { Copy, Check } from 'lucide-react';
 import { API_BASE_URL } from '../config';
 
-export default function CodeSnippet({ path }) {
+export default function CodeSnippet({ path, url }) {
   const [lang, setLang] = useState('curl');
   const [copied, setCopied] = useState(false);
 
-  const fullUrl = path.startsWith('http') ? path : `${API_BASE_URL}${path}`;
+  const target = path || url || '';
+  const fullUrl = target.startsWith('http') ? target : `${API_BASE_URL}${target}`;
 
   const getCode = () => {
     switch (lang) {

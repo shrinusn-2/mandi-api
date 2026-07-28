@@ -30,8 +30,8 @@ frontend/
 │   │   └── PriceChart.jsx     # Chart.js line graph for price trend visualizer
 │   ├── pages/
 │   │   ├── HomePage.jsx        # Hero landing page, quick start, interactive live demo
-│   │   ├── PlaygroundPage.jsx  # Interactive request console & dual visualizer
-│   │   ├── DocsPage.jsx        # Complete API reference documentation
+│   │   ├── PlaygroundPage.jsx  # Interactive request console with dynamic backend dropdowns
+│   │   ├── DocsPage.jsx        # Complete API reference documentation with sidebar nav
 │   │   └── StatusPage.jsx      # System status & operational metrics dashboard
 │   ├── config.js               # Dynamic base URL resolution (VITE_API_URL || localhost:3000)
 │   ├── App.jsx                 # Main SPA view switcher shell
@@ -49,6 +49,16 @@ frontend/
 ### `Navbar.jsx`
 - Persistent top navigation header holding logo, interactive page switchers (`Overview`, `Playground`, `Docs`, `Status`), and `StatusBadge`.
 
+### `PlaygroundPage.jsx`
+- Terminal-style interactive API request builder console.
+- **Dynamic Backend Dropdowns**:
+  - Automatically queries `GET /v1/commodities?state=<SelectedState>` and `GET /v1/markets?state=<SelectedState>` when the state changes.
+  - Dynamically populates selectable crop options (*Onion, Wheat, Potato, etc.*) and APMC mandis (*Nagpur APMC, Pune APMC, etc.*) — **0 text typing required, 0 spelling mistakes**.
+- **Dual Visualizer**: Toggle tabs between **"Pretty JSON"** (`JsonViewer`) and **"Price Chart"** (`PriceChart`).
+
+### `DocsPage.jsx`
+- Complete API reference documentation with sticky sidebar section navigation (`Overview`, `states`, `commodities`, `markets`, `prices`, `history`, `errors`), parameter tables, and syntax-highlighted code snippets.
+
 ### `StatusBadge.jsx`
 - Sends dynamic health check pings to `${API_BASE_URL}/health`.
 - Measures roundtrip response latency (e.g. `API Live (142ms)`).
@@ -60,13 +70,8 @@ frontend/
 
 ### `CodeSnippet.jsx`
 - Multi-language snippet generator for **cURL**, **JavaScript (fetch)**, **Python (requests)**, and **Go (net/http)**.
+- Robust prop fallback (`path || url`) preventing undefined property errors.
 - One-click copy to clipboard with feedback animation.
-
-### `JsonViewer.jsx`
-- Formatted, syntax-highlighted JSON viewer with record count header and instant copy button.
-
-### `PriceChart.jsx`
-- Canvas-based line graph using Chart.js to visualize daily modal, minimum, and maximum prices over date ranges.
 
 ---
 

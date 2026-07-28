@@ -34,8 +34,8 @@ frontend/
 │   │   └── aiSpec.js           # Static high-density LLM prompt specification string
 │   ├── pages/
 │   │   ├── HomePage.jsx        # Hero landing page with AI spec banner & live demo
-│   │   ├── PlaygroundPage.jsx  # Ergonomic laptop console with full-width Response Payload
-│   │   ├── DocsPage.jsx        # Complete API reference documentation with sidebar nav & AI spec
+│   │   ├── PlaygroundPage.jsx  # High-density split console (no vertical scrolling)
+│   │   ├── DocsPage.jsx        # Complete API reference documentation with IntersectionObserver ScrollSpy
 │   │   └── StatusPage.jsx      # System status & operational metrics dashboard
 │   ├── config.js               # Dynamic base URL resolution (VITE_API_URL || localhost:3000)
 │   ├── App.jsx                 # Main SPA view switcher shell
@@ -50,11 +50,14 @@ frontend/
 
 ## 3. Key Components & Specifications
 
+### `DocsPage.jsx`
+- **IntersectionObserver ScrollSpy**: Real-time active section tracking as the user scrolls down the page. The sticky sidebar navigation tab (`Overview`, `states`, `commodities`, `markets`, `prices`, `history`, `errors`) automatically updates and highlights based on viewport visibility.
+
 ### `PlaygroundPage.jsx`
-- **Ergonomic Full-Width Layout**:
-  - **Top Row**: 2 equal cards — **Request Builder** (Step 1 State, Step 2 Market, Step 3 Commodity) + **Integration Code Generator** (cURL, JS, Python, Go).
-  - **Bottom Row**: Full-width **Response Payload Console** housing the status HTTP badge, latency timer, ingestion time badge, and prominent toggle tabs for **"Pretty JSON"** and **"Price Chart Visualizer"**.
-- **100% Laptop & Screen Friendly**: Zero side-scrolling, zero horizontal button cut-off, and maximum space for reading JSON and viewing Chart.js line graphs.
+- **High-Density Split Console**:
+  - **Left Panel (360px)**: Compact Request Builder controls (Step 1 State, Step 2 Market, Step 3 Commodity, Execute button).
+  - **Right Panel (Flex: 1)**: Integrated Output Console featuring **Pretty JSON**, **Price Chart**, and **Code Generator** tabs side-by-side.
+- **Zero Scrolling**: Request controls, JSON response, and price charts fit into a single laptop screen fold.
 
 ### `CustomSelect.jsx`
 - Custom glassmorphism dropdown component with integrated real-time search input bar.
@@ -65,9 +68,6 @@ frontend/
 - Banner component featured on `HomePage` and `DocsPage`.
 - Contains a structured Markdown prompt specification optimized for LLMs (*ChatGPT, Claude, Gemini, Antigravity*).
 - Features **"Copy Spec for AI"** (copies to clipboard) and **"Download .md"** (downloads `MANDI-API-SPEC.md`).
-
-### `DocsPage.jsx`
-- Complete API reference documentation with sticky sidebar section navigation (`Overview`, `states`, `commodities`, `markets`, `prices`, `history`, `errors`), parameter tables, syntax-highlighted code snippets, and `AiSpecButton`.
 
 ### `StatusBadge.jsx`
 - Sends dynamic health check pings to `${API_BASE_URL}/health`.

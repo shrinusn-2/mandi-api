@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CodeSnippet from '../components/CodeSnippet';
 import JsonViewer from '../components/JsonViewer';
 import AiSpecButton from '../components/AiSpecButton';
@@ -7,22 +7,58 @@ import { API_BASE_URL } from '../config';
 export default function DocsPage() {
   const [activeSection, setActiveSection] = useState('overview');
 
+  useEffect(() => {
+    const sectionIds = ['overview', 'ai-prompt', 'states', 'commodities', 'markets', 'prices', 'history', 'errors'];
+    
+    const observerCallback = (entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          setActiveSection(entry.target.id);
+        }
+      });
+    };
+
+    const observerOptions = {
+      root: null,
+      rootMargin: '-20% 0px -60% 0px',
+      threshold: 0
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+    sectionIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
   const scrollToSection = (id) => {
     setActiveSection(id);
     const element = document.getElementById(id);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      const offset = 80;
+      const bodyRect = document.body.getBoundingClientRect().top;
+      const elementRect = element.getBoundingClientRect().top;
+      const elementPosition = elementRect - bodyRect;
+      const offsetPosition = elementPosition - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
     }
   };
 
   return (
-    <div style={{ padding: '2rem 0', display: 'grid', gridTemplateColumns: '220px 1fr', gap: '2rem', alignItems: 'start' }}>
-      {/* Sticky Navigation Sidebar */}
-      <aside style={{ position: 'sticky', top: '90px', background: '#0d121f', padding: '1rem', borderRadius: '12px', border: '1px solid var(--border-subtle)' }}>
-        <h4 style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '0.75rem' }}>
+    <div style={{ padding: '1.5rem 0', display: 'grid', gridTemplateColumns: '220px 1fr', gap: '1.5rem', alignItems: 'start' }}>
+      {/* Sticky Navigation Sidebar with ScrollSpy */}
+      <aside style={{ position: 'sticky', top: '80px', background: '#0d121f', padding: '0.85rem', borderRadius: '12px', border: '1px solid var(--border-subtle)' }}>
+        <h4 style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '0.6rem', paddingLeft: '0.5rem' }}>
           Documentation Nav
         </h4>
-        <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+        <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
           {[
             { id: 'overview', label: 'Overview & Base URL' },
             { id: 'ai-prompt', label: '🤖 Build With AI' },
@@ -38,13 +74,15 @@ export default function DocsPage() {
               onClick={() => scrollToSection(item.id)}
               style={{
                 textAlign: 'left',
-                padding: '0.45rem 0.75rem',
-                fontSize: '0.85rem',
+                padding: '0.4rem 0.65rem',
+                fontSize: '0.82rem',
                 borderRadius: '6px',
                 border: 'none',
                 background: activeSection === item.id ? 'rgba(16, 185, 129, 0.15)' : 'transparent',
                 color: activeSection === item.id ? 'var(--accent-emerald)' : 'var(--text-secondary)',
-                fontWeight: activeSection === item.id ? 600 : 400
+                fontWeight: activeSection === item.id ? 600 : 400,
+                transition: 'all 0.15s ease',
+                cursor: 'pointer'
               }}
             >
               {item.label}
@@ -54,26 +92,26 @@ export default function DocsPage() {
       </aside>
 
       {/* Main Documentation Content */}
-      <main style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
+      <main style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
         <div>
-          <h2 style={{ fontSize: '2.2rem', fontWeight: 800, marginBottom: '0.5rem' }}>
+          <h2 style={{ fontSize: '1.8rem', fontWeight: 800, marginBottom: '0.3rem' }}>
             API Documentation (v1)
           </h2>
-          <p style={{ color: 'var(--text-secondary)' }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
             Complete reference for endpoints, query parameters, response envelopes, and rate limits.
           </p>
         </div>
 
         {/* Overview & Base URL */}
-        <section id="overview" className="glass-card">
-          <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.75rem', color: 'var(--accent-emerald)' }}>
+        <section id="overview" className="glass-card" style={{ padding: '1.25rem' }}>
+          <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.5rem', color: 'var(--accent-emerald)' }}>
             Base URL & Authentication
           </h3>
-          <p style={{ color: 'var(--text-secondary)', marginBottom: '1rem' }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', marginBottom: '0.75rem' }}>
             All requests are keyless and free to use. Prefix all routes with <code>/v1</code>. Rate limited to 100 requests per 15 minutes per IP address.
           </p>
           <div className="code-box">
-            <div className="code-body">
+            <div className="code-body" style={{ padding: '0.65rem 1rem' }}>
               <code>Base URL: {API_BASE_URL}/v1</code>
             </div>
           </div>
@@ -85,49 +123,49 @@ export default function DocsPage() {
         </section>
 
         {/* GET /v1/states */}
-        <section id="states" className="glass-card">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
-            <span style={{ background: '#10b981', color: '#090d16', padding: '0.2rem 0.6rem', borderRadius: '6px', fontWeight: 700, fontSize: '0.8rem' }}>
+        <section id="states" className="glass-card" style={{ padding: '1.25rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.5rem' }}>
+            <span style={{ background: '#10b981', color: '#090d16', padding: '0.15rem 0.5rem', borderRadius: '4px', fontWeight: 700, fontSize: '0.75rem' }}>
               GET
             </span>
-            <code style={{ fontSize: '1.1rem', fontWeight: 600 }}>/v1/states</code>
+            <code style={{ fontSize: '1rem', fontWeight: 600 }}>/v1/states</code>
           </div>
-          <p style={{ color: 'var(--text-secondary)', marginBottom: '1rem' }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', marginBottom: '0.75rem' }}>
             Returns a list of the 5 supported Indian states for Mandi prices.
           </p>
           <CodeSnippet path="/v1/states" />
         </section>
 
         {/* GET /v1/commodities */}
-        <section id="commodities" className="glass-card">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
-            <span style={{ background: '#10b981', color: '#090d16', padding: '0.2rem 0.6rem', borderRadius: '6px', fontWeight: 700, fontSize: '0.8rem' }}>
+        <section id="commodities" className="glass-card" style={{ padding: '1.25rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.5rem' }}>
+            <span style={{ background: '#10b981', color: '#090d16', padding: '0.15rem 0.5rem', borderRadius: '4px', fontWeight: 700, fontSize: '0.75rem' }}>
               GET
             </span>
-            <code style={{ fontSize: '1.1rem', fontWeight: 600 }}>/v1/commodities</code>
+            <code style={{ fontSize: '1rem', fontWeight: 600 }}>/v1/commodities</code>
           </div>
-          <p style={{ color: 'var(--text-secondary)', marginBottom: '1rem' }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', marginBottom: '0.75rem' }}>
             Returns a list of distinct commodities/crops. Optionally scoped to a specific state or market.
           </p>
 
-          <table style={{ width: '100%', margin: '1rem 0', fontSize: '0.88rem', borderCollapse: 'collapse' }}>
+          <table style={{ width: '100%', margin: '0.75rem 0', fontSize: '0.85rem', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid var(--border-subtle)', textAlign: 'left', color: 'var(--text-muted)' }}>
-                <th style={{ padding: '0.5rem 0' }}>Parameter</th>
+                <th style={{ padding: '0.4rem 0' }}>Parameter</th>
                 <th>Type</th>
                 <th>Required</th>
                 <th>Description</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td style={{ padding: '0.5rem 0', fontFamily: 'var(--font-mono)' }}>state</td>
+              <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                <td style={{ padding: '0.4rem 0', fontFamily: 'var(--font-mono)', color: 'var(--accent-cyan)' }}>state</td>
                 <td>String</td>
                 <td>Optional</td>
                 <td>Filter commodities by state name (e.g. Maharashtra)</td>
               </tr>
               <tr>
-                <td style={{ padding: '0.5rem 0', fontFamily: 'var(--font-mono)' }}>market</td>
+                <td style={{ padding: '0.4rem 0', fontFamily: 'var(--font-mono)', color: 'var(--accent-cyan)' }}>market</td>
                 <td>String</td>
                 <td>Optional</td>
                 <td>Filter commodities by specific APMC market (e.g. Katol APMC)</td>
@@ -139,21 +177,21 @@ export default function DocsPage() {
         </section>
 
         {/* GET /v1/markets */}
-        <section id="markets" className="glass-card">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
-            <span style={{ background: '#10b981', color: '#090d16', padding: '0.2rem 0.6rem', borderRadius: '6px', fontWeight: 700, fontSize: '0.8rem' }}>
+        <section id="markets" className="glass-card" style={{ padding: '1.25rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.5rem' }}>
+            <span style={{ background: '#10b981', color: '#090d16', padding: '0.15rem 0.5rem', borderRadius: '4px', fontWeight: 700, fontSize: '0.75rem' }}>
               GET
             </span>
-            <code style={{ fontSize: '1.1rem', fontWeight: 600 }}>/v1/markets</code>
+            <code style={{ fontSize: '1rem', fontWeight: 600 }}>/v1/markets</code>
           </div>
-          <p style={{ color: 'var(--text-secondary)', marginBottom: '1rem' }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', marginBottom: '0.75rem' }}>
             Returns list of all active mandis/markets in a state.
           </p>
 
-          <table style={{ width: '100%', margin: '1rem 0', fontSize: '0.88rem', borderCollapse: 'collapse' }}>
+          <table style={{ width: '100%', margin: '0.75rem 0', fontSize: '0.85rem', borderCollapse: 'collapse' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid var(--border-subtle)', textAlign: 'left', color: 'var(--text-muted)' }}>
-                <th style={{ padding: '0.5rem 0' }}>Parameter</th>
+                <th style={{ padding: '0.4rem 0' }}>Parameter</th>
                 <th>Type</th>
                 <th>Required</th>
                 <th>Description</th>
@@ -161,7 +199,7 @@ export default function DocsPage() {
             </thead>
             <tbody>
               <tr>
-                <td style={{ padding: '0.5rem 0', fontFamily: 'var(--font-mono)' }}>state</td>
+                <td style={{ padding: '0.4rem 0', fontFamily: 'var(--font-mono)', color: 'var(--accent-cyan)' }}>state</td>
                 <td>String</td>
                 <td>Yes</td>
                 <td>Required state name (e.g. Uttar Pradesh)</td>
@@ -173,39 +211,39 @@ export default function DocsPage() {
         </section>
 
         {/* GET /v1/prices */}
-        <section id="prices" className="glass-card">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
-            <span style={{ background: '#10b981', color: '#090d16', padding: '0.2rem 0.6rem', borderRadius: '6px', fontWeight: 700, fontSize: '0.8rem' }}>
+        <section id="prices" className="glass-card" style={{ padding: '1.25rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.5rem' }}>
+            <span style={{ background: '#10b981', color: '#090d16', padding: '0.15rem 0.5rem', borderRadius: '4px', fontWeight: 700, fontSize: '0.75rem' }}>
               GET
             </span>
-            <code style={{ fontSize: '1.1rem', fontWeight: 600 }}>/v1/prices</code>
+            <code style={{ fontSize: '1rem', fontWeight: 600 }}>/v1/prices</code>
           </div>
-          <p style={{ color: 'var(--text-secondary)', marginBottom: '1rem' }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', marginBottom: '0.75rem' }}>
             Query daily mandi prices. Requires either <code>state</code> OR <code>commodity</code>.
           </p>
           <CodeSnippet path="/v1/prices?state=Maharashtra&commodity=Onion" />
         </section>
 
         {/* GET /v1/prices/history */}
-        <section id="history" className="glass-card">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
-            <span style={{ background: '#10b981', color: '#090d16', padding: '0.2rem 0.6rem', borderRadius: '6px', fontWeight: 700, fontSize: '0.8rem' }}>
+        <section id="history" className="glass-card" style={{ padding: '1.25rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.5rem' }}>
+            <span style={{ background: '#10b981', color: '#090d16', padding: '0.15rem 0.5rem', borderRadius: '4px', fontWeight: 700, fontSize: '0.75rem' }}>
               GET
             </span>
             <code style={{ fontSize: '1.1rem', fontWeight: 600 }}>/v1/prices/history</code>
           </div>
-          <p style={{ color: 'var(--text-secondary)', marginBottom: '1rem' }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', marginBottom: '0.75rem' }}>
             Retrieve price history trends over date ranges. If <code>market</code> is omitted, returns average state-wide modal prices per date.
           </p>
           <CodeSnippet path="/v1/prices/history?state=Maharashtra&commodity=Onion" />
         </section>
 
         {/* Errors & Rate Limits */}
-        <section id="errors" className="glass-card">
-          <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.75rem', color: '#ef4444' }}>
+        <section id="errors" className="glass-card" style={{ padding: '1.25rem' }}>
+          <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.5rem', color: '#ef4444' }}>
             Errors & Rate Limits
           </h3>
-          <p style={{ color: 'var(--text-secondary)', marginBottom: '1rem' }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', marginBottom: '0.75rem' }}>
             The API uses standard HTTP response codes and a uniform error envelope format.
           </p>
           <JsonViewer data={{

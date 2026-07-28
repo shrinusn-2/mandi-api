@@ -24,7 +24,7 @@ export default function PlaygroundPage() {
   const [isWakingUp, setIsWakingUp] = useState(false);
   const [responseData, setResponseData] = useState(null);
   const [historyData, setHistoryData] = useState(null);
-  const [activeViewTab, setActiveViewTab] = useState('json');
+  const [activeTab, setActiveTab] = useState('json'); // 'code' | 'json' | 'chart'
   const [responseStatus, setResponseStatus] = useState(null);
   const [latency, setLatency] = useState(null);
 
@@ -126,10 +126,10 @@ export default function PlaygroundPage() {
 
       if (endpoint === '/v1/prices/history' && data.success) {
         setHistoryData(data.data);
-        setActiveViewTab('chart');
-      } else {
+        setActiveTab('chart');
+      } else if (activeTab !== 'code') {
         setHistoryData(null);
-        setActiveViewTab('json');
+        setActiveTab('json');
       }
     } catch (err) {
       clearTimeout(timer);
@@ -169,40 +169,40 @@ export default function PlaygroundPage() {
   const latestIngestTime = responseData?.meta?.latest_fetched_at ? formatIngestionTime(responseData.meta.latest_fetched_at) : null;
 
   return (
-    <div style={{ padding: '2rem 0' }}>
-      {/* Page Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
+    <div style={{ padding: '1.25rem 0' }}>
+      {/* Compact Header Bar */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
         <div>
-          <h2 style={{ fontSize: '2rem', fontWeight: 800 }}>API Interactive Console</h2>
-          <p style={{ color: 'var(--text-secondary)' }}>Build queries, generate code snippets, inspect live JSON, and plot price charts</p>
+          <h2 style={{ fontSize: '1.6rem', fontWeight: 800 }}>API Interactive Console</h2>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem' }}>Build requests, inspect JSON payloads, plot price charts, and copy code</p>
         </div>
         <StatusBadge />
       </div>
 
-      {/* Top 2-Column Section: Request Controls + Code Snippet */}
-      <div className="grid-2" style={{ marginBottom: '2rem', alignItems: 'stretch' }}>
-        {/* Left Column: Request Builder */}
-        <div className="glass-card" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-          <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Filter size={18} color="var(--accent-emerald)" /> Request Builder
+      {/* Split Console Container */}
+      <div style={{ display: 'grid', gridTemplateColumns: '360px 1fr', gap: '1.25rem', alignItems: 'start' }}>
+        {/* Left Column: Compact Request Controls */}
+        <div className="glass-card" style={{ padding: '1.25rem' }}>
+          <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+            <Filter size={16} color="var(--accent-emerald)" /> Request Builder
           </h3>
 
-          {/* Endpoint selector */}
-          <div style={{ marginBottom: '1.25rem' }}>
-            <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem', fontWeight: 600 }}>
+          {/* Endpoint Selector */}
+          <div style={{ marginBottom: '1rem' }}>
+            <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-secondary)', marginBottom: '0.35rem', fontWeight: 600 }}>
               Endpoint
             </label>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <div style={{ display: 'flex', gap: '0.4rem' }}>
               <button 
                 className={`btn ${endpoint === '/v1/prices' ? 'btn-primary' : 'btn-secondary'}`}
-                style={{ flex: 1, padding: '0.55rem 0.75rem', fontSize: '0.85rem' }}
+                style={{ flex: 1, padding: '0.45rem 0.6rem', fontSize: '0.8rem' }}
                 onClick={() => setEndpoint('/v1/prices')}
               >
                 /v1/prices
               </button>
               <button 
                 className={`btn ${endpoint === '/v1/prices/history' ? 'btn-primary' : 'btn-secondary'}`}
-                style={{ flex: 1, padding: '0.55rem 0.75rem', fontSize: '0.85rem' }}
+                style={{ flex: 1, padding: '0.45rem 0.6rem', fontSize: '0.8rem' }}
                 onClick={() => setEndpoint('/v1/prices/history')}
               >
                 /v1/prices/history
@@ -211,7 +211,7 @@ export default function PlaygroundPage() {
           </div>
 
           {/* Step 1: State Selector */}
-          <div style={{ marginBottom: '1.25rem' }}>
+          <div style={{ marginBottom: '1rem' }}>
             <CustomSelect
               label="Step 1: Select State"
               value={selectedState}
@@ -222,9 +222,9 @@ export default function PlaygroundPage() {
           </div>
 
           {/* Step 2: Specific Market Selector */}
-          <div style={{ marginBottom: '1.25rem' }}>
+          <div style={{ marginBottom: '1rem' }}>
             <CustomSelect
-              label={`Step 2: Specific Market / Mandi (${marketsList.length > 0 ? marketsList.length - 1 : 0} active)`}
+              label={`Step 2: Specific Market (${marketsList.length > 0 ? marketsList.length - 1 : 0} active)`}
               value={market}
               onChange={setMarket}
               options={marketsList}
@@ -236,9 +236,9 @@ export default function PlaygroundPage() {
           </div>
 
           {/* Step 3: Commodity Selector */}
-          <div style={{ marginBottom: '1.5rem', flex: 1 }}>
+          <div style={{ marginBottom: '1.25rem' }}>
             <CustomSelect
-              label={`Step 3: Commodity / Crop (${commoditiesList.length} available)`}
+              label={`Step 3: Crop (${commoditiesList.length} available)`}
               value={commodity}
               onChange={setCommodity}
               options={commoditiesList}
@@ -251,143 +251,141 @@ export default function PlaygroundPage() {
 
           <button 
             className="btn btn-primary" 
-            style={{ width: '100%', justifyContent: 'center', marginTop: 'auto' }}
+            style={{ width: '100%', justifyContent: 'center', padding: '0.65rem' }}
             onClick={handleExecute}
             disabled={loading}
           >
-            {loading ? <RefreshCw size={16} className="spin" /> : <Play size={16} />}
+            {loading ? <RefreshCw size={15} className="spin" /> : <Play size={15} />}
             Execute Request
           </button>
         </div>
 
-        {/* Right Column: Code Snippet Generator */}
-        <div className="glass-card" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-          <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Code size={18} color="var(--accent-cyan)" /> Integration Code Generator
-          </h3>
+        {/* Right Column: High-Density Interactive View Console */}
+        <div style={{ borderRadius: '14px', overflow: 'hidden', border: '1px solid var(--border-subtle)', background: 'var(--bg-card)' }}>
+          {/* Console Header Bar */}
+          <div style={{
+            display: 'flex',
+            justify: 'space-between',
+            alignItems: 'center',
+            background: '#0d121f',
+            padding: '0.65rem 1rem',
+            borderBottom: '1px solid var(--border-subtle)',
+            flexWrap: 'wrap',
+            gap: '0.5rem'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', gap: '0.35rem' }}>
+                <div style={{ width: 9, height: 9, borderRadius: '50%', background: '#ef4444' }} />
+                <div style={{ width: 9, height: 9, borderRadius: '50%', background: '#f59e0b' }} />
+                <div style={{ width: 9, height: 9, borderRadius: '50%', background: '#10b981' }} />
+              </div>
 
-          <div style={{ flex: 1 }}>
-            <CodeSnippet path={buildQueryPath()} />
-          </div>
-        </div>
-      </div>
+              <span style={{ fontSize: '0.82rem', color: '#fff', fontWeight: 700, fontFamily: 'var(--font-mono)', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                <Terminal size={14} color="var(--accent-emerald)" /> Output Console
+              </span>
 
-      {/* Full-Width Bottom Section: Response Payload & Visualizer Console */}
-      <div style={{ borderRadius: '16px', overflow: 'hidden', border: '1px solid var(--border-subtle)', background: 'var(--bg-card)' }}>
-        {/* Console Header Bar */}
-        <div style={{
-          display: 'flex',
-          justify: 'space-between',
-          alignItems: 'center',
-          background: '#0d121f',
-          padding: '0.85rem 1.25rem',
-          borderBottom: '1px solid var(--border-subtle)',
-          flexWrap: 'wrap',
-          gap: '1rem'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-            <div style={{ display: 'flex', gap: '0.4rem' }}>
-              <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#ef4444' }} />
-              <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#f59e0b' }} />
-              <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#10b981' }} />
+              {responseStatus && (
+                <span style={{
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                  padding: '0.15rem 0.5rem',
+                  borderRadius: '5px',
+                  background: responseStatus === 200 ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+                  color: responseStatus === 200 ? '#10b981' : '#ef4444',
+                  border: `1px solid ${responseStatus === 200 ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)'}`
+                }}>
+                  HTTP {responseStatus}
+                </span>
+              )}
+
+              {latency && (
+                <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                  {latency}ms
+                </span>
+              )}
             </div>
 
-            <span style={{ fontSize: '0.9rem', color: '#fff', fontWeight: 700, fontFamily: 'var(--font-mono)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-              <Layers size={16} color="var(--accent-emerald)" /> Response Payload
-            </span>
+            {/* View Switching Tabs */}
+            <div style={{ display: 'flex', gap: '0.3rem', background: 'rgba(0,0,0,0.4)', padding: '0.2rem', borderRadius: '6px', border: '1px solid var(--border-subtle)' }}>
+              <button
+                className={`code-tab ${activeTab === 'json' ? 'active' : ''}`}
+                onClick={() => setActiveTab('json')}
+                style={{ fontSize: '0.8rem', padding: '0.25rem 0.65rem' }}
+              >
+                Pretty JSON
+              </button>
+              <button
+                className={`code-tab ${activeTab === 'chart' ? 'active' : ''}`}
+                onClick={() => setActiveTab('chart')}
+                style={{ fontSize: '0.8rem', padding: '0.25rem 0.65rem' }}
+              >
+                Price Chart
+              </button>
+              <button
+                className={`code-tab ${activeTab === 'code' ? 'active' : ''}`}
+                onClick={() => setActiveTab('code')}
+                style={{ fontSize: '0.8rem', padding: '0.25rem 0.65rem' }}
+              >
+                Code Generator
+              </button>
+            </div>
+          </div>
 
-            {responseStatus && (
-              <span style={{
-                fontSize: '0.8rem',
-                fontWeight: 700,
-                padding: '0.2rem 0.6rem',
+          {/* Console Body Area */}
+          <div style={{ padding: '1rem' }}>
+            {/* Dynamic Ingestion Timestamp Badge */}
+            {latestIngestTime && (
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                padding: '0.35rem 0.75rem',
                 borderRadius: '6px',
-                background: responseStatus === 200 ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
-                color: responseStatus === 200 ? '#10b981' : '#ef4444',
-                border: `1px solid ${responseStatus === 200 ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)'}`
+                background: 'rgba(16, 185, 129, 0.1)',
+                border: '1px solid rgba(16, 185, 129, 0.3)',
+                color: '#10b981',
+                fontSize: '0.8rem',
+                fontWeight: 600,
+                marginBottom: '0.85rem'
               }}>
-                HTTP {responseStatus}
-              </span>
+                <Clock size={13} />
+                <span>Today's Closing Prices (Ingested: {latestIngestTime} IST)</span>
+              </div>
             )}
 
-            {latency && (
-              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                {latency}ms
-              </span>
+            {/* Cold-start Warning Notice */}
+            {isWakingUp && (
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '0.6rem 0.85rem',
+                borderRadius: '6px',
+                background: 'rgba(245, 158, 11, 0.1)',
+                border: '1px solid rgba(245, 158, 11, 0.3)',
+                color: '#f59e0b',
+                fontSize: '0.82rem',
+                marginBottom: '0.85rem',
+                animation: 'pulse 2s infinite'
+              }}>
+                <AlertCircle size={15} />
+                <span>Waking up backend server (this initial load takes 30-40s)...</span>
+              </div>
+            )}
+
+            {loading ? (
+              <div style={{ textAlign: 'center', padding: '3rem 1rem' }}>
+                <RefreshCw size={24} className="spin" color="var(--accent-emerald)" style={{ margin: '0 auto 0.75rem auto', display: 'block' }} />
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem' }}>Querying Mandi Price API server...</p>
+              </div>
+            ) : activeTab === 'json' ? (
+              responseData && <JsonViewer data={responseData} />
+            ) : activeTab === 'chart' ? (
+              <PriceChart historyData={historyData || (responseData?.data || [])} commodity={commodity} state={selectedState} />
+            ) : (
+              <CodeSnippet path={buildQueryPath()} />
             )}
           </div>
-
-          {/* View Toggle Tabs */}
-          <div style={{ display: 'flex', gap: '0.4rem', background: 'rgba(0,0,0,0.4)', padding: '0.3rem', borderRadius: '8px', border: '1px solid var(--border-subtle)' }}>
-            <button
-              className={`code-tab ${activeViewTab === 'json' ? 'active' : ''}`}
-              onClick={() => setActiveViewTab('json')}
-              style={{ fontSize: '0.85rem', padding: '0.35rem 0.85rem' }}
-            >
-              Pretty JSON
-            </button>
-            <button
-              className={`code-tab ${activeViewTab === 'chart' ? 'active' : ''}`}
-              onClick={() => setActiveViewTab('chart')}
-              style={{ fontSize: '0.85rem', padding: '0.35rem 0.85rem' }}
-            >
-              Price Chart Visualizer
-            </button>
-          </div>
-        </div>
-
-        {/* Console Body Padding */}
-        <div style={{ padding: '1.5rem' }}>
-          {/* Dynamic Ingestion Timestamp Badge */}
-          {latestIngestTime && (
-            <div style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              padding: '0.45rem 0.9rem',
-              borderRadius: '8px',
-              background: 'rgba(16, 185, 129, 0.1)',
-              border: '1px solid rgba(16, 185, 129, 0.3)',
-              color: '#10b981',
-              fontSize: '0.85rem',
-              fontWeight: 600,
-              marginBottom: '1.25rem'
-            }}>
-              <Clock size={14} />
-              <span>Today's Closing Prices (Ingested: {latestIngestTime} IST)</span>
-            </div>
-          )}
-
-          {/* Cold-start Warning Notice */}
-          {isWakingUp && (
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.6rem',
-              padding: '0.75rem 1rem',
-              borderRadius: '8px',
-              background: 'rgba(245, 158, 11, 0.1)',
-              border: '1px solid rgba(245, 158, 11, 0.3)',
-              color: '#f59e0b',
-              fontSize: '0.88rem',
-              marginBottom: '1.25rem',
-              animation: 'pulse 2s infinite'
-            }}>
-              <AlertCircle size={16} />
-              <span>Waking up backend server (this initial load takes 30-40s)...</span>
-            </div>
-          )}
-
-          {loading ? (
-            <div style={{ textAlign: 'center', padding: '3.5rem 1rem' }}>
-              <RefreshCw size={28} className="spin" color="var(--accent-emerald)" style={{ margin: '0 auto 1rem auto', display: 'block' }} />
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>Querying Mandi Price API server...</p>
-            </div>
-          ) : activeViewTab === 'json' ? (
-            responseData && <JsonViewer data={responseData} />
-          ) : (
-            <PriceChart historyData={historyData || (responseData?.data || [])} commodity={commodity} state={selectedState} />
-          )}
         </div>
       </div>
     </div>

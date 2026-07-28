@@ -31,7 +31,7 @@ frontend/
 │   │   └── PriceChart.jsx     # Chart.js line graph for price trend visualizer
 │   ├── pages/
 │   │   ├── HomePage.jsx        # Hero landing page, quick start, interactive live demo
-│   │   ├── PlaygroundPage.jsx  # Interactive request console with CustomSelect dropdowns
+│   │   ├── PlaygroundPage.jsx  # Cascading request console (State -> Market -> Commodity)
 │   │   ├── DocsPage.jsx        # Complete API reference documentation with sidebar nav
 │   │   └── StatusPage.jsx      # System status & operational metrics dashboard
 │   ├── config.js               # Dynamic base URL resolution (VITE_API_URL || localhost:3000)
@@ -47,19 +47,18 @@ frontend/
 
 ## 3. Key Components & Specifications
 
+### `PlaygroundPage.jsx`
+- **Cascading Selection Order**:
+  1. **Step 1: Select State** (e.g. *Maharashtra*)
+  2. **Step 2: Select Market / Mandi** (e.g. *Katol APMC* or *All Markets*)
+  3. **Step 3: Select Commodity / Crop** (dynamically queried based on State AND selected Market)
+- **Zero Empty Results**: Selecting a specific market automatically filters crops to **only those actually traded in that mandi**, guaranteeing 100% valid non-zero results.
+- **Dual Visualizer**: Toggle tabs between **"Pretty JSON"** (`JsonViewer`) and **"Price Chart"** (`PriceChart`).
+
 ### `CustomSelect.jsx`
 - Custom glassmorphism dropdown component with integrated real-time search input bar.
-- Used for State, Commodity/Crop, and Market selection.
+- Used for State, Market/Mandi, and Commodity/Crop selection.
 - Features search filtering, sublabel/district badges, checkmark selection, and click-outside closing.
-
-### `Navbar.jsx`
-- Persistent top navigation header holding logo, interactive page switchers (`Overview`, `Playground`, `Docs`, `Status`), and `StatusBadge`.
-
-### `PlaygroundPage.jsx`
-- Terminal-style interactive API request builder console.
-- Uses `CustomSelect` for State, Commodity, and Market selection.
-- Automatically queries backend endpoints on state selection to populate selectable crops and APMC mandis — **0 text typing required, 0 spelling mistakes**.
-- **Dual Visualizer**: Toggle tabs between **"Pretty JSON"** (`JsonViewer`) and **"Price Chart"** (`PriceChart`).
 
 ### `DocsPage.jsx`
 - Complete API reference documentation with sticky sidebar section navigation (`Overview`, `states`, `commodities`, `markets`, `prices`, `history`, `errors`), parameter tables, and syntax-highlighted code snippets.
@@ -71,7 +70,6 @@ frontend/
 
 ### `CodeSnippet.jsx`
 - Multi-language snippet generator for **cURL**, **JavaScript (fetch)**, **Python (requests)**, and **Go (net/http)**.
-- Robust prop fallback (`path || url`) preventing undefined property errors.
 - One-click copy to clipboard with feedback animation.
 
 ---

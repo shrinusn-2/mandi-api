@@ -25,7 +25,7 @@ backend/
 │   ├── validators.js         # Input validation & error envelope helpers
 │   └── controllers/
 │       ├── states.js         # GET /v1/states controller
-│       ├── commodities.js    # GET /v1/commodities controller
+│       ├── commodities.js    # GET /v1/commodities controller (supports state & market filtering)
 │       ├── markets.js        # GET /v1/markets controller
 │       └── prices.js         # GET /v1/prices & GET /v1/prices/history controller
 ├── scripts/
@@ -90,7 +90,7 @@ All routes are rate-limited to 100 requests per 15 minutes per IP.
 | `/` | `GET` | — | — | API welcome index & route directory |
 | `/health` | `GET` | — | — | Health check status |
 | `/v1/states` | `GET` | — | — | List supported states |
-| `/v1/commodities` | `GET` | — | `state` | Distinct commodities list |
+| `/v1/commodities` | `GET` | — | `state`, `market` | Distinct commodities list (supports state & market filtering) |
 | `/v1/markets` | `GET` | `state` | — | Active mandis in a state |
 | `/v1/prices` | `GET` | `state` OR `commodity` | `market`, `variety`, `date` | Latest crop price records |
 | `/v1/prices/history` | `GET` | `state`, `commodity` | `market`, `from`, `to` | Trend data over date ranges |
@@ -103,7 +103,7 @@ All routes are rate-limited to 100 requests per 15 minutes per IP.
   "meta": {
     "count": 42,
     "state": "Maharashtra",
-    "commodity": "Onion"
+    "market": "Katol APMC"
   }
 }
 ```

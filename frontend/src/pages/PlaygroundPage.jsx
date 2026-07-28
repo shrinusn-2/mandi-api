@@ -9,14 +9,15 @@ import { API_BASE_URL, SUPPORTED_STATES } from '../config';
 
 export default function PlaygroundPage() {
   const [selectedState, setSelectedState] = useState('Maharashtra');
-  const [commodity, setCommodity] = useState('Onion');
   const [market, setMarket] = useState('');
+  const [commodity, setCommodity] = useState('Onion');
   const [endpoint, setEndpoint] = useState('/v1/prices');
 
   // Dynamic dropdown options fetched from backend
-  const [commoditiesList, setCommoditiesList] = useState([]);
   const [marketsList, setMarketsList] = useState([]);
-  const [loadingOptions, setLoadingOptions] = useState(false);
+  const [commoditiesList, setCommoditiesList] = useState([]);
+  const [loadingMarkets, setLoadingMarkets] = useState(false);
+  const [loadingCommodities, setLoadingCommodities] = useState(false);
 
   // Request execution state
   const [loading, setLoading] = useState(false);
@@ -27,59 +28,76 @@ export default function PlaygroundPage() {
   const [responseStatus, setResponseStatus] = useState(null);
   const [latency, setLatency] = useState(null);
 
-  // Fetch commodities and markets dynamically whenever state changes
+  // Step 1: Fetch markets whenever state changes
   useEffect(() => {
-    async function fetchStateOptions() {
-      setLoadingOptions(true);
+    async function fetchMarkets() {
+      setLoadingMarkets(true);
       try {
-        const [commRes, mktRes] = await Promise.all([
-          fetch(`${API_BASE_URL}/v1/commodities?state=${encodeURIComponent(selectedState)}`),
-          fetch(`${API_BASE_URL}/v1/markets?state=${encodeURIComponent(selectedState)}`)
-        ]);
+        const res = await fetch(`${API_BASE_URL}/v1/markets?state=${encodeURIComponent(selectedState)}`);
+        const data = await res.json();
 
-        const commData = await commRes.json();
-        const mktData = await mktRes.json();
-
-        if (commData.success && Array.isArray(commData.data)) {
-          setCommoditiesList(commData.data);
-          // Auto-select first commodity if current commodity isn't in new state's list
-          if (commData.data.length > 0 && !commData.data.includes(commodity)) {
-            setCommodity(commData.data[0]);
-          }
-        } else {
-          setCommoditiesList([]);
-        }
-
-        if (mktData.success && Array.isArray(mktData.data)) {
-          const formattedMarkets = [
+        if (data.success && Array.isArray(data.data)) {
+          const formatted = [
             { label: 'All Markets (State Aggregate)', value: '' },
-            ...mktData.data.map(m => ({
+            ...data.data.map(m => ({
               label: m.market,
               value: m.market,
               sublabel: m.district ? `District: ${m.district}` : null
             }))
           ];
-          setMarketsList(formattedMarkets);
-          setMarket(''); // Reset market filter on state change
+          setMarketsList(formatted);
+          setMarket(''); // reset market when state changes
         } else {
           setMarketsList([{ label: 'All Markets (State Aggregate)', value: '' }]);
         }
       } catch (err) {
-        console.error('Error fetching state commodities/markets:', err);
+        console.error('Error fetching markets:', err);
       } finally {
-        setLoadingOptions(false);
+        setLoadingMarkets(false);
       }
     }
 
-    fetchStateOptions();
+    fetchMarkets();
   }, [selectedState]);
+
+  // Step 2: Fetch commodities whenever state or market changes (cascading dependency)
+  useEffect(() => {
+    async function fetchCommodities() {
+      setLoadingCommodities(true);
+      try {
+        let url = `${API_BASE_URL}/v1/commodities?state=${encodeURIComponent(selectedState)}`;
+        if (market) {
+          url += `&market=${encodeURIComponent(market)}`;
+        }
+
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (data.success && Array.isArray(data.data)) {
+          setCommoditiesList(data.data);
+          // Auto-select first commodity if current selection is not available in this market
+          if (data.data.length > 0 && !data.data.includes(commodity)) {
+            setCommodity(data.data[0]);
+          }
+        } else {
+          setCommoditiesList([]);
+        }
+      } catch (err) {
+        console.error('Error fetching commodities:', err);
+      } finally {
+        setLoadingCommodities(false);
+      }
+    }
+
+    fetchCommodities();
+  }, [selectedState, market]);
 
   const buildQueryPath = () => {
     let url = endpoint;
     const params = new URLSearchParams();
     if (selectedState) params.append('state', selectedState);
-    if (commodity) params.append('commodity', commodity);
     if (market) params.append('market', market);
+    if (commodity) params.append('commodity', commodity);
 
     const str = params.toString();
     return str ? `${url}?${str}` : url;
@@ -130,7 +148,7 @@ export default function PlaygroundPage() {
 
   useEffect(() => {
     handleExecute();
-  }, [endpoint, selectedState, commodity, market]);
+  }, [endpoint, selectedState, market, commodity]);
 
   return (
     <div style={{ padding: '2rem 0' }}>
@@ -180,7 +198,7 @@ export default function PlaygroundPage() {
       </div>
 
       <div className="grid-2" style={{ marginBottom: '2rem', alignItems: 'start' }}>
-        {/* Left Column: Custom Searchable Query Request Controls */}
+        {/* Left Column: Cascading Query Controls */}
         <div className="glass-card" style={{ borderRadius: '0 0 16px 16px', borderTop: '1px solid var(--border-subtle)' }}>
           <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Filter size={18} color="var(--accent-emerald)" /> Request Builder
@@ -209,10 +227,10 @@ export default function PlaygroundPage() {
             </div>
           </div>
 
-          {/* Searchable State Selector */}
+          {/* Step 1: State Selector */}
           <div style={{ marginBottom: '1.25rem' }}>
             <CustomSelect
-              label="Select State"
+              label="Step 1: Select State"
               value={selectedState}
               onChange={setSelectedState}
               options={SUPPORTED_STATES}
@@ -220,31 +238,31 @@ export default function PlaygroundPage() {
             />
           </div>
 
-          {/* Searchable Commodity Dropdown */}
+          {/* Step 2: Specific Market Selector */}
           <div style={{ marginBottom: '1.25rem' }}>
             <CustomSelect
-              label={`Commodity / Crop (${commoditiesList.length} available)`}
-              value={commodity}
-              onChange={setCommodity}
-              options={commoditiesList}
-              placeholder="Select crop..."
-              loading={loadingOptions}
-              disabled={loadingOptions || commoditiesList.length === 0}
-              icon={Sprout}
-            />
-          </div>
-
-          {/* Searchable Market Dropdown */}
-          <div style={{ marginBottom: '1.5rem' }}>
-            <CustomSelect
-              label={`Specific Market / Mandi (${marketsList.length > 0 ? marketsList.length - 1 : 0} active)`}
+              label={`Step 2: Specific Market / Mandi (${marketsList.length > 0 ? marketsList.length - 1 : 0} active)`}
               value={market}
               onChange={setMarket}
               options={marketsList}
               placeholder="All Markets (State Aggregate)"
-              loading={loadingOptions}
-              disabled={loadingOptions}
+              loading={loadingMarkets}
+              disabled={loadingMarkets}
               icon={Store}
+            />
+          </div>
+
+          {/* Step 3: Cascading Commodity Selector */}
+          <div style={{ marginBottom: '1.5rem' }}>
+            <CustomSelect
+              label={`Step 3: Commodity / Crop (${commoditiesList.length} available in selection)`}
+              value={commodity}
+              onChange={setCommodity}
+              options={commoditiesList}
+              placeholder="Select crop..."
+              loading={loadingCommodities}
+              disabled={loadingCommodities || commoditiesList.length === 0}
+              icon={Sprout}
             />
           </div>
 

@@ -3,11 +3,11 @@ const { sendSuccess, sendError, normalizeState, SUPPORTED_STATES } = require('..
 
 /**
  * GET /v1/commodities
- * Query params: state (optional)
+ * Query params: state (optional), market (optional)
  */
 async function getCommodities(req, res) {
   try {
-    const { state } = req.query;
+    const { state, market } = req.query;
     let query = supabase.from('mandi_prices').select('commodity');
 
     let matchedState = null;
@@ -24,13 +24,16 @@ async function getCommodities(req, res) {
       query = query.eq('state', matchedState);
     }
 
+    if (market && market.trim()) {
+      query = query.ilike('market', `%${market.trim()}%`);
+    }
+
     const { data, error } = await query;
 
-    if (error) {
-      // Fallback if DB table does not exist yet
+    if (error || !data) {
       return sendSuccess(res, [], {
         state: matchedState || null,
-        note: 'Database table mandi_prices is empty or initializing'
+        market: market || null
       });
     }
 
@@ -38,7 +41,8 @@ async function getCommodities(req, res) {
     const uniqueCommodities = Array.from(new Set(data.map(item => item.commodity))).sort();
 
     return sendSuccess(res, uniqueCommodities, {
-      state: matchedState || 'ALL'
+      state: matchedState || 'ALL',
+      market: market || 'ALL'
     });
   } catch (err) {
     return sendError(res, 'SERVER_ERROR', err.message, 500);

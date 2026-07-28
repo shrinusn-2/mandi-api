@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Play, Filter, TrendingUp, RefreshCw } from 'lucide-react';
+import { Play, Filter, TrendingUp, RefreshCw, Terminal, AlertCircle } from 'lucide-react';
 import CodeSnippet from '../components/CodeSnippet';
 import JsonViewer from '../components/JsonViewer';
 import PriceChart from '../components/PriceChart';
-
-const STATES = ['Maharashtra', 'Uttar Pradesh', 'Punjab', 'Madhya Pradesh', 'Karnataka'];
+import RegionSelector from '../components/RegionSelector';
+import StatusBadge from '../components/StatusBadge';
+import { API_BASE_URL } from '../config';
 
 export default function PlaygroundPage() {
   const [selectedState, setSelectedState] = useState('Maharashtra');
@@ -12,10 +13,14 @@ export default function PlaygroundPage() {
   const [market, setMarket] = useState('');
   const [endpoint, setEndpoint] = useState('/v1/prices');
   const [loading, setLoading] = useState(false);
+  const [isWakingUp, setIsWakingUp] = useState(false);
   const [responseData, setResponseData] = useState(null);
   const [historyData, setHistoryData] = useState(null);
+  const [activeViewTab, setActiveViewTab] = useState('json'); // 'json' | 'chart'
+  const [responseStatus, setResponseStatus] = useState(null);
+  const [latency, setLatency] = useState(null);
 
-  const buildQueryUrl = () => {
+  const buildQueryPath = () => {
     let url = endpoint;
     const params = new URLSearchParams();
     if (selectedState) params.append('state', selectedState);
@@ -28,26 +33,44 @@ export default function PlaygroundPage() {
 
   const handleExecute = async () => {
     setLoading(true);
+    setIsWakingUp(false);
     setResponseData(null);
+    const start = Date.now();
+
+    const timer = setTimeout(() => {
+      setIsWakingUp(true);
+    }, 2500);
+
     try {
-      const url = buildQueryUrl();
-      const res = await fetch(url);
+      const path = buildQueryPath();
+      const res = await fetch(`${API_BASE_URL}${path}`);
+      const duration = Date.now() - start;
+      clearTimeout(timer);
+
+      setResponseStatus(res.status);
+      setLatency(duration);
+
       const data = await res.json();
       setResponseData(data);
 
-      // If fetching prices/history, store graph history data
       if (endpoint === '/v1/prices/history' && data.success) {
         setHistoryData(data.data);
+        setActiveViewTab('chart'); // auto switch to chart view on history endpoint
       } else {
         setHistoryData(null);
+        setActiveViewTab('json');
       }
     } catch (err) {
+      clearTimeout(timer);
+      setResponseStatus(500);
       setResponseData({
         success: false,
         error: { code: 'CLIENT_FETCH_ERROR', message: err.message }
       });
     } finally {
+      clearTimeout(timer);
       setLoading(false);
+      setIsWakingUp(false);
     }
   };
 
@@ -57,24 +80,62 @@ export default function PlaygroundPage() {
 
   return (
     <div style={{ padding: '2rem 0' }}>
-      <h2 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '0.5rem' }}>
-        API Interactive Playground
-      </h2>
-      <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem' }}>
-        Test endpoints, build dynamic queries, preview JSON responses, and visualize mandi market trends live.
-      </p>
+      {/* Console Header Bar */}
+      <div style={{
+        display: 'flex',
+        justify: 'space-between',
+        alignItems: 'center',
+        background: '#0d121f',
+        padding: '0.75rem 1.25rem',
+        borderRadius: '12px 12px 0 0',
+        border: '1px solid var(--border-subtle)',
+        borderBottom: 'none'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <div style={{ display: 'flex', gap: '0.4rem' }}>
+            <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#ef4444' }} />
+            <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#f59e0b' }} />
+            <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#10b981' }} />
+          </div>
+          <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+            <Terminal size={14} color="var(--accent-emerald)" /> API Console
+          </span>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          {responseStatus && (
+            <span style={{
+              fontSize: '0.8rem',
+              fontWeight: 700,
+              padding: '0.2rem 0.6rem',
+              borderRadius: '6px',
+              background: responseStatus === 200 ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+              color: responseStatus === 200 ? '#10b981' : '#ef4444',
+              border: `1px solid ${responseStatus === 200 ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)'}`
+            }}>
+              HTTP {responseStatus}
+            </span>
+          )}
+          {latency && (
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+              {latency}ms
+            </span>
+          )}
+          <StatusBadge />
+        </div>
+      </div>
 
       <div className="grid-2" style={{ marginBottom: '2rem', alignItems: 'start' }}>
-        {/* Left Column: Controls */}
-        <div className="glass-card">
+        {/* Left Column: Query Request Controls */}
+        <div className="glass-card" style={{ borderRadius: '0 0 16px 16px', borderTop: '1px solid var(--border-subtle)' }}>
           <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Filter size={18} color="var(--accent-emerald)" /> Query Parameters
+            <Filter size={18} color="var(--accent-emerald)" /> Request Builder
           </h3>
 
           {/* Endpoint selector */}
           <div style={{ marginBottom: '1.25rem' }}>
             <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem', fontWeight: 600 }}>
-              API Endpoint
+              Endpoint
             </label>
             <div style={{ display: 'flex', gap: '0.5rem' }}>
               <button 
@@ -94,39 +155,21 @@ export default function PlaygroundPage() {
             </div>
           </div>
 
-          {/* State selector */}
+          {/* State selector component */}
           <div style={{ marginBottom: '1.25rem' }}>
-            <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem', fontWeight: 600 }}>
-              State (Required)
-            </label>
-            <select
-              value={selectedState}
-              onChange={(e) => setSelectedState(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '0.65rem 0.85rem',
-                background: '#0d121f',
-                border: '1px solid var(--border-subtle)',
-                borderRadius: '8px',
-                color: '#fff',
-                fontFamily: 'var(--font-sans)',
-                fontSize: '0.9rem'
-              }}
-            >
-              {STATES.map(s => <option key={s} value={s}>{s}</option>)}
-            </select>
+            <RegionSelector selectedState={selectedState} onSelectState={setSelectedState} />
           </div>
 
           {/* Commodity field */}
           <div style={{ marginBottom: '1.25rem' }}>
             <label style={{ display: 'block', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem', fontWeight: 600 }}>
-              Commodity / Crop (e.g. Onion, Wheat, Potato, Brinjal)
+              Commodity / Crop Name
             </label>
             <input
               type="text"
               value={commodity}
               onChange={(e) => setCommodity(e.target.value)}
-              placeholder="e.g. Onion"
+              placeholder="e.g. Onion, Wheat, Potato"
               style={{
                 width: '100%',
                 padding: '0.65rem 0.85rem',
@@ -170,43 +213,77 @@ export default function PlaygroundPage() {
             disabled={loading}
           >
             {loading ? <RefreshCw size={16} className="spin" /> : <Play size={16} />}
-            Execute API Request
+            Execute Request
           </button>
         </div>
 
-        {/* Right Column: Code Generator & JSON Output */}
+        {/* Right Column: Code Generator & Dual Visualizer */}
         <div>
           <div style={{ marginBottom: '1.5rem' }}>
             <h4 style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
-              Generated Request Code
+              Integration Code Generator
             </h4>
-            <CodeSnippet url={buildQueryUrl()} />
+            <CodeSnippet path={buildQueryPath()} />
           </div>
 
           <div>
-            <h4 style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
-              Live API Response
-            </h4>
-            {responseData ? (
-              <JsonViewer data={responseData} />
-            ) : (
-              <div className="glass-card" style={{ textAlign: 'center', padding: '2rem' }}>
-                <p style={{ color: 'var(--text-muted)' }}>Click "Execute API Request" to view output</p>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+              <h4 style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+                Response Payload
+              </h4>
+
+              {/* View Toggle Tabs */}
+              <div style={{ display: 'flex', gap: '0.3rem', background: '#0d121f', padding: '0.2rem', borderRadius: '6px', border: '1px solid var(--border-subtle)' }}>
+                <button
+                  className={`code-tab ${activeViewTab === 'json' ? 'active' : ''}`}
+                  onClick={() => setActiveViewTab('json')}
+                  style={{ fontSize: '0.78rem', padding: '0.25rem 0.6rem' }}
+                >
+                  Pretty JSON
+                </button>
+                <button
+                  className={`code-tab ${activeViewTab === 'chart' ? 'active' : ''}`}
+                  onClick={() => setActiveViewTab('chart')}
+                  style={{ fontSize: '0.78rem', padding: '0.25rem 0.6rem' }}
+                >
+                  Price Chart
+                </button>
               </div>
+            </div>
+
+            {/* Cold-start Warning Notice */}
+            {isWakingUp && (
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.6rem',
+                padding: '0.75rem 1rem',
+                borderRadius: '8px',
+                background: 'rgba(245, 158, 11, 0.1)',
+                border: '1px solid rgba(245, 158, 11, 0.3)',
+                color: '#f59e0b',
+                fontSize: '0.85rem',
+                marginBottom: '1rem',
+                animation: 'pulse 2s infinite'
+              }}>
+                <AlertCircle size={16} />
+                <span>Waking up backend server (this initial load takes 30-40s)...</span>
+              </div>
+            )}
+
+            {loading ? (
+              <div className="glass-card" style={{ textAlign: 'center', padding: '3rem 1rem' }}>
+                <RefreshCw size={24} className="spin" color="var(--accent-emerald)" style={{ margin: '0 auto 1rem auto', display: 'block' }} />
+                <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Querying Mandi Price API server...</p>
+              </div>
+            ) : activeViewTab === 'json' ? (
+              responseData && <JsonViewer data={responseData} />
+            ) : (
+              <PriceChart historyData={historyData || (responseData?.data || [])} commodity={commodity} state={selectedState} />
             )}
           </div>
         </div>
       </div>
-
-      {/* History Trend Visualizer */}
-      {endpoint === '/v1/prices/history' && (
-        <div style={{ marginTop: '2rem' }}>
-          <h3 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <TrendingUp size={20} color="var(--accent-emerald)" /> Price History Trend Visualizer
-          </h3>
-          <PriceChart historyData={historyData} commodity={commodity} state={selectedState} />
-        </div>
-      )}
     </div>
   );
 }

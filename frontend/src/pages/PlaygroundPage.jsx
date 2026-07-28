@@ -4,7 +4,6 @@ import CodeSnippet from '../components/CodeSnippet';
 import JsonViewer from '../components/JsonViewer';
 import PriceChart from '../components/PriceChart';
 import CustomSelect from '../components/CustomSelect';
-import StatusBadge from '../components/StatusBadge';
 import { API_BASE_URL, SUPPORTED_STATES } from '../config';
 
 export default function PlaygroundPage() {
@@ -179,7 +178,9 @@ export default function PlaygroundPage() {
         padding: '0.75rem 1.25rem',
         borderRadius: '12px 12px 0 0',
         border: '1px solid var(--border-subtle)',
-        borderBottom: 'none'
+        borderBottom: 'none',
+        flexWrap: 'wrap',
+        gap: '0.5rem'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           <div style={{ display: 'flex', gap: '0.4rem' }}>
@@ -211,7 +212,6 @@ export default function PlaygroundPage() {
               {latency}ms
             </span>
           )}
-          <StatusBadge />
         </div>
       </div>
 
@@ -305,13 +305,13 @@ export default function PlaygroundPage() {
           </div>
 
           <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem', flexWrap: 'wrap', gap: '0.5rem' }}>
               <h4 style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
                 Response Payload
               </h4>
 
               {/* View Toggle Tabs */}
-              <div style={{ display: 'flex', gap: '0.3rem', background: '#0d121f', padding: '0.2rem', borderRadius: '6px', border: '1px solid var(--border-subtle)' }}>
+              <div style={{ display: 'flex', gap: '0.3rem', background: '#0d121f', padding: '0.25rem', borderRadius: '8px', border: '1px solid var(--border-subtle)' }}>
                 <button
                   className={`code-tab ${activeViewTab === 'json' ? 'active' : ''}`}
                   onClick={() => setActiveViewTab('json')}
@@ -342,10 +342,14 @@ export default function PlaygroundPage() {
                 color: '#10b981',
                 fontSize: '0.82rem',
                 fontWeight: 600,
-                marginBottom: '1rem'
+                marginBottom: '1rem',
+                maxWidth: '100%',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap'
               }}>
-                <Clock size={14} />
-                <span>Today's Closing Prices (Ingested: {latestIngestTime} IST)</span>
+                <Clock size={14} style={{ flexShrink: 0 }} />
+                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>Today's Closing Prices (Ingested: {latestIngestTime} IST)</span>
               </div>
             )}
 

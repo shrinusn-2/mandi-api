@@ -24,13 +24,14 @@ frontend/
 │   ├── components/
 │   │   ├── Navbar.jsx          # Top navigation header & brand logo
 │   │   ├── StatusBadge.jsx     # Live health checker & latency ping (with warm-up detection)
-│   │   ├── RegionSelector.jsx  # Searchable autocomplete dropdown for 5 Indian states
+│   │   ├── CustomSelect.jsx    # Searchable glassmorphism dropdown with search bar & checkmarks
+│   │   ├── RegionSelector.jsx  # Searchable state selector dropdown
 │   │   ├── CodeSnippet.jsx     # Multi-language code snippet generator (cURL, JS, Python, Go)
 │   │   ├── JsonViewer.jsx      # Syntax-highlighted JSON payload viewer
 │   │   └── PriceChart.jsx     # Chart.js line graph for price trend visualizer
 │   ├── pages/
 │   │   ├── HomePage.jsx        # Hero landing page, quick start, interactive live demo
-│   │   ├── PlaygroundPage.jsx  # Interactive request console with dynamic backend dropdowns
+│   │   ├── PlaygroundPage.jsx  # Interactive request console with CustomSelect dropdowns
 │   │   ├── DocsPage.jsx        # Complete API reference documentation with sidebar nav
 │   │   └── StatusPage.jsx      # System status & operational metrics dashboard
 │   ├── config.js               # Dynamic base URL resolution (VITE_API_URL || localhost:3000)
@@ -46,14 +47,18 @@ frontend/
 
 ## 3. Key Components & Specifications
 
+### `CustomSelect.jsx`
+- Custom glassmorphism dropdown component with integrated real-time search input bar.
+- Used for State, Commodity/Crop, and Market selection.
+- Features search filtering, sublabel/district badges, checkmark selection, and click-outside closing.
+
 ### `Navbar.jsx`
 - Persistent top navigation header holding logo, interactive page switchers (`Overview`, `Playground`, `Docs`, `Status`), and `StatusBadge`.
 
 ### `PlaygroundPage.jsx`
 - Terminal-style interactive API request builder console.
-- **Dynamic Backend Dropdowns**:
-  - Automatically queries `GET /v1/commodities?state=<SelectedState>` and `GET /v1/markets?state=<SelectedState>` when the state changes.
-  - Dynamically populates selectable crop options (*Onion, Wheat, Potato, etc.*) and APMC mandis (*Nagpur APMC, Pune APMC, etc.*) — **0 text typing required, 0 spelling mistakes**.
+- Uses `CustomSelect` for State, Commodity, and Market selection.
+- Automatically queries backend endpoints on state selection to populate selectable crops and APMC mandis — **0 text typing required, 0 spelling mistakes**.
 - **Dual Visualizer**: Toggle tabs between **"Pretty JSON"** (`JsonViewer`) and **"Price Chart"** (`PriceChart`).
 
 ### `DocsPage.jsx`
@@ -63,10 +68,6 @@ frontend/
 - Sends dynamic health check pings to `${API_BASE_URL}/health`.
 - Measures roundtrip response latency (e.g. `API Live (142ms)`).
 - Automatic warm-up timeout detection: If the backend container is asleep and takes >2.5 seconds to respond, it smoothly transitions to `Backend Sleeping (Waking up...)`.
-
-### `RegionSelector.jsx`
-- Searchable autocomplete dropdown for the 5 supported Indian states (*Maharashtra, Uttar Pradesh, Punjab, Madhya Pradesh, Karnataka*).
-- Instant search filtering, click-outside handling, and active item checkmark styling.
 
 ### `CodeSnippet.jsx`
 - Multi-language snippet generator for **cURL**, **JavaScript (fetch)**, **Python (requests)**, and **Go (net/http)**.

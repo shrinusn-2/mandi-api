@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Play, Filter, TrendingUp, RefreshCw, Terminal, AlertCircle } from 'lucide-react';
+import { Play, Filter, RefreshCw, Terminal, AlertCircle, MapPin, Sprout, Store } from 'lucide-react';
 import CodeSnippet from '../components/CodeSnippet';
 import JsonViewer from '../components/JsonViewer';
 import PriceChart from '../components/PriceChart';
-import RegionSelector from '../components/RegionSelector';
+import CustomSelect from '../components/CustomSelect';
 import StatusBadge from '../components/StatusBadge';
-import { API_BASE_URL } from '../config';
+import { API_BASE_URL, SUPPORTED_STATES } from '../config';
 
 export default function PlaygroundPage() {
   const [selectedState, setSelectedState] = useState('Maharashtra');
@@ -42,7 +42,7 @@ export default function PlaygroundPage() {
 
         if (commData.success && Array.isArray(commData.data)) {
           setCommoditiesList(commData.data);
-          // Auto-select first commodity if current commodity isn't in list
+          // Auto-select first commodity if current commodity isn't in new state's list
           if (commData.data.length > 0 && !commData.data.includes(commodity)) {
             setCommodity(commData.data[0]);
           }
@@ -51,9 +51,18 @@ export default function PlaygroundPage() {
         }
 
         if (mktData.success && Array.isArray(mktData.data)) {
-          setMarketsList(mktData.data);
+          const formattedMarkets = [
+            { label: 'All Markets (State Aggregate)', value: '' },
+            ...mktData.data.map(m => ({
+              label: m.market,
+              value: m.market,
+              sublabel: m.district ? `District: ${m.district}` : null
+            }))
+          ];
+          setMarketsList(formattedMarkets);
+          setMarket(''); // Reset market filter on state change
         } else {
-          setMarketsList([]);
+          setMarketsList([{ label: 'All Markets (State Aggregate)', value: '' }]);
         }
       } catch (err) {
         console.error('Error fetching state commodities/markets:', err);
@@ -171,7 +180,7 @@ export default function PlaygroundPage() {
       </div>
 
       <div className="grid-2" style={{ marginBottom: '2rem', alignItems: 'start' }}>
-        {/* Left Column: Selectable Query Request Controls */}
+        {/* Left Column: Custom Searchable Query Request Controls */}
         <div className="glass-card" style={{ borderRadius: '0 0 16px 16px', borderTop: '1px solid var(--border-subtle)' }}>
           <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Filter size={18} color="var(--accent-emerald)" /> Request Builder
@@ -200,69 +209,43 @@ export default function PlaygroundPage() {
             </div>
           </div>
 
-          {/* State selector */}
+          {/* Searchable State Selector */}
           <div style={{ marginBottom: '1.25rem' }}>
-            <RegionSelector selectedState={selectedState} onSelectState={setSelectedState} />
+            <CustomSelect
+              label="Select State"
+              value={selectedState}
+              onChange={setSelectedState}
+              options={SUPPORTED_STATES}
+              icon={MapPin}
+            />
           </div>
 
-          {/* Selectable Commodity Dropdown */}
+          {/* Searchable Commodity Dropdown */}
           <div style={{ marginBottom: '1.25rem' }}>
-            <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem', fontWeight: 600 }}>
-              <span>Commodity / Crop ({commoditiesList.length} available)</span>
-              {loadingOptions && <RefreshCw size={12} className="spin" color="var(--accent-emerald)" />}
-            </label>
-            <select
+            <CustomSelect
+              label={`Commodity / Crop (${commoditiesList.length} available)`}
               value={commodity}
-              onChange={(e) => setCommodity(e.target.value)}
+              onChange={setCommodity}
+              options={commoditiesList}
+              placeholder="Select crop..."
+              loading={loadingOptions}
               disabled={loadingOptions || commoditiesList.length === 0}
-              style={{
-                width: '100%',
-                padding: '0.65rem 0.85rem',
-                background: '#0d121f',
-                border: '1px solid var(--border-subtle)',
-                borderRadius: '8px',
-                color: '#fff',
-                fontFamily: 'var(--font-sans)',
-                fontSize: '0.9rem',
-                cursor: 'pointer'
-              }}
-            >
-              {commoditiesList.map(c => (
-                <option key={c} value={c}>{c}</option>
-              ))}
-              {commoditiesList.length === 0 && <option value="">No crops available</option>}
-            </select>
+              icon={Sprout}
+            />
           </div>
 
-          {/* Selectable Market Dropdown */}
+          {/* Searchable Market Dropdown */}
           <div style={{ marginBottom: '1.5rem' }}>
-            <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem', fontWeight: 600 }}>
-              <span>Specific Market / Mandi ({marketsList.length} active)</span>
-              {loadingOptions && <RefreshCw size={12} className="spin" color="var(--accent-emerald)" />}
-            </label>
-            <select
+            <CustomSelect
+              label={`Specific Market / Mandi (${marketsList.length > 0 ? marketsList.length - 1 : 0} active)`}
               value={market}
-              onChange={(e) => setMarket(e.target.value)}
+              onChange={setMarket}
+              options={marketsList}
+              placeholder="All Markets (State Aggregate)"
+              loading={loadingOptions}
               disabled={loadingOptions}
-              style={{
-                width: '100%',
-                padding: '0.65rem 0.85rem',
-                background: '#0d121f',
-                border: '1px solid var(--border-subtle)',
-                borderRadius: '8px',
-                color: '#fff',
-                fontFamily: 'var(--font-sans)',
-                fontSize: '0.9rem',
-                cursor: 'pointer'
-              }}
-            >
-              <option value="">All Markets (State Aggregate)</option>
-              {marketsList.map(m => (
-                <option key={m.market} value={m.market}>
-                  {m.market} ({m.district})
-                </option>
-              ))}
-            </select>
+              icon={Store}
+            />
           </div>
 
           <button 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Play, Filter, RefreshCw, Terminal, AlertCircle, MapPin, Sprout, Store } from 'lucide-react';
+import { Play, Filter, RefreshCw, Terminal, AlertCircle, MapPin, Sprout, Store, Clock } from 'lucide-react';
 import CodeSnippet from '../components/CodeSnippet';
 import JsonViewer from '../components/JsonViewer';
 import PriceChart from '../components/PriceChart';
@@ -46,7 +46,7 @@ export default function PlaygroundPage() {
             }))
           ];
           setMarketsList(formatted);
-          setMarket(''); // reset market when state changes
+          setMarket('');
         } else {
           setMarketsList([{ label: 'All Markets (State Aggregate)', value: '' }]);
         }
@@ -60,7 +60,7 @@ export default function PlaygroundPage() {
     fetchMarkets();
   }, [selectedState]);
 
-  // Step 2: Fetch commodities whenever state or market changes (cascading dependency)
+  // Step 2: Fetch commodities whenever state or market changes
   useEffect(() => {
     async function fetchCommodities() {
       setLoadingCommodities(true);
@@ -75,7 +75,6 @@ export default function PlaygroundPage() {
 
         if (data.success && Array.isArray(data.data)) {
           setCommoditiesList(data.data);
-          // Auto-select first commodity if current selection is not available in this market
           if (data.data.length > 0 && !data.data.includes(commodity)) {
             setCommodity(data.data[0]);
           }
@@ -149,6 +148,25 @@ export default function PlaygroundPage() {
   useEffect(() => {
     handleExecute();
   }, [endpoint, selectedState, market, commodity]);
+
+  const formatIngestionTime = (isoString) => {
+    if (!isoString) return null;
+    try {
+      return new Date(isoString).toLocaleString('en-IN', {
+        timeZone: 'Asia/Kolkata',
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      });
+    } catch (e) {
+      return null;
+    }
+  };
+
+  const latestIngestTime = responseData?.meta?.latest_fetched_at ? formatIngestionTime(responseData.meta.latest_fetched_at) : null;
 
   return (
     <div style={{ padding: '2rem 0' }}>
@@ -310,6 +328,26 @@ export default function PlaygroundPage() {
                 </button>
               </div>
             </div>
+
+            {/* Dynamic Ingestion Timestamp Badge */}
+            {latestIngestTime && (
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                padding: '0.45rem 0.9rem',
+                borderRadius: '8px',
+                background: 'rgba(16, 185, 129, 0.1)',
+                border: '1px solid rgba(16, 185, 129, 0.3)',
+                color: '#10b981',
+                fontSize: '0.82rem',
+                fontWeight: 600,
+                marginBottom: '1rem'
+              }}>
+                <Clock size={14} />
+                <span>Today's Closing Prices (Ingested: {latestIngestTime} IST)</span>
+              </div>
+            )}
 
             {/* Cold-start Warning Notice */}
             {isWakingUp && (

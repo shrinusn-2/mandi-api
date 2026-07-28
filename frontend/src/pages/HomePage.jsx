@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowRight, Database, Zap, Globe, Sparkles, CheckCircle2, RefreshCw, AlertCircle } from 'lucide-react';
+import { ArrowRight, Database, Zap, Globe, Sparkles, CheckCircle2, RefreshCw, AlertCircle, Clock } from 'lucide-react';
 import CodeSnippet from '../components/CodeSnippet';
 import RegionSelector from '../components/RegionSelector';
 import JsonViewer from '../components/JsonViewer';
@@ -41,6 +41,25 @@ export default function HomePage({ setActiveTab }) {
   useEffect(() => {
     fetchDemo(selectedState);
   }, [selectedState]);
+
+  const formatIngestionTime = (isoString) => {
+    if (!isoString) return null;
+    try {
+      return new Date(isoString).toLocaleString('en-IN', {
+        timeZone: 'Asia/Kolkata',
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      });
+    } catch (e) {
+      return null;
+    }
+  };
+
+  const latestIngestTime = demoData?.meta?.latest_fetched_at ? formatIngestionTime(demoData.meta.latest_fetched_at) : null;
 
   return (
     <div style={{ padding: '3rem 0' }}>
@@ -108,6 +127,26 @@ export default function HomePage({ setActiveTab }) {
             <RegionSelector selectedState={selectedState} onSelectState={setSelectedState} />
           </div>
         </div>
+
+        {/* Dynamic Ingestion Timestamp Badge */}
+        {latestIngestTime && (
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            padding: '0.45rem 0.9rem',
+            borderRadius: '8px',
+            background: 'rgba(16, 185, 129, 0.1)',
+            border: '1px solid rgba(16, 185, 129, 0.3)',
+            color: '#10b981',
+            fontSize: '0.85rem',
+            fontWeight: 600,
+            marginBottom: '1.25rem'
+          }}>
+            <Clock size={14} />
+            <span>Today's Final Closing Prices (Last Ingested: {latestIngestTime} IST)</span>
+          </div>
+        )}
 
         {/* Cold-start Warning Notice */}
         {isWakingUp && (

@@ -88,8 +88,8 @@ All routes are rate-limited to 100 requests per 15 minutes per IP.
 | `/v1/states` | `GET` | — | — | List supported states |
 | `/v1/commodities` | `GET` | — | `state`, `market` | Distinct commodities list (supports state & market filtering) |
 | `/v1/markets` | `GET` | `state` | — | Active mandis in a state |
-| `/v1/prices` | `GET` | `state` OR `commodity` | `market`, `variety`, `date` | Latest crop price records |
-| `/v1/prices/history` | `GET` | `state`, `commodity` | `market`, `from`, `to` | Trend data over date ranges |
+| `/v1/prices` | `GET` | `state` OR `commodity` | `market`, `variety`, `date` | Latest crop price records with `latest_fetched_at` timestamp |
+| `/v1/prices/history` | `GET` | `state`, `commodity` | `market`, `from`, `to` | Trend data over date ranges with `latest_fetched_at` timestamp |
 
 ### Standard Response Envelope (Success)
 ```json
@@ -99,7 +99,8 @@ All routes are rate-limited to 100 requests per 15 minutes per IP.
   "meta": {
     "count": 42,
     "state": "Maharashtra",
-    "market": "Katol APMC"
+    "market": "Katol APMC",
+    "latest_fetched_at": "2026-07-28T20:31:05.000Z"
   }
 }
 ```

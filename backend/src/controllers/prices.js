@@ -2,6 +2,25 @@ const { supabase } = require('../db');
 const { sendSuccess, sendError, normalizeState, isValidDateString, SUPPORTED_STATES } = require('../validators');
 
 /**
+ * Helper to extract max fetched_at timestamp from rows
+ */
+function getLatestFetchedAt(rows) {
+  if (!rows || rows.length === 0) return null;
+  let maxTime = 0;
+  let maxIso = null;
+  rows.forEach(r => {
+    if (r.fetched_at) {
+      const t = new Date(r.fetched_at).getTime();
+      if (t > maxTime) {
+        maxTime = t;
+        maxIso = r.fetched_at;
+      }
+    }
+  });
+  return maxIso;
+}
+
+/**
  * GET /v1/prices
  * Params:
  *  Required: state OR commodity
@@ -50,7 +69,6 @@ async function getPrices(req, res) {
     if (variety) query = query.ilike('variety', `%${variety.trim()}%`);
     if (date) query = query.eq('arrival_date', date);
 
-    // Default sorting by latest date
     query = query.order('arrival_date', { ascending: false }).limit(200);
 
     const { data, error } = await query;
@@ -63,11 +81,14 @@ async function getPrices(req, res) {
       });
     }
 
+    const latestFetchedAt = getLatestFetchedAt(data);
+
     return sendSuccess(res, data || [], {
       state: matchedState || state || 'ALL',
       commodity: commodity || 'ALL',
       market: market || 'ALL',
-      date: date || 'LATEST'
+      date: date || 'LATEST',
+      latest_fetched_at: latestFetchedAt
     });
   } catch (err) {
     return sendError(res, 'SERVER_ERROR', err.message, 500);
@@ -144,17 +165,18 @@ async function getPriceHistory(req, res) {
       });
     }
 
-    // If market IS specified, return market specific rows directly
+    const latestFetchedAt = getLatestFetchedAt(data);
+
     if (market) {
       return sendSuccess(res, data, {
         state: matchedState,
         commodity,
         market,
-        mode: 'MARKET_SPECIFIC'
+        mode: 'MARKET_SPECIFIC',
+        latest_fetched_at: latestFetchedAt
       });
     }
 
-    // Aggregate by arrival_date if market is omitted
     const dateMap = new Map();
     data.forEach(row => {
       const d = row.arrival_date;
@@ -195,7 +217,8 @@ async function getPriceHistory(req, res) {
     return sendSuccess(res, aggregatedHistory, {
       state: matchedState,
       commodity,
-      mode: 'STATE_AVERAGE'
+      mode: 'STATE_AVERAGE',
+      latest_fetched_at: latestFetchedAt
     });
   } catch (err) {
     return sendError(res, 'SERVER_ERROR', err.message, 500);

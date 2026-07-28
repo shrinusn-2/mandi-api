@@ -34,7 +34,7 @@ frontend/
 │   │   └── aiSpec.js           # Static high-density LLM prompt specification string
 │   ├── pages/
 │   │   ├── HomePage.jsx        # Hero landing page with AI spec banner & live demo
-│   │   ├── PlaygroundPage.jsx  # Cascading request console (State -> Market -> Commodity)
+│   │   ├── PlaygroundPage.jsx  # Ergonomic laptop console with full-width Response Payload
 │   │   ├── DocsPage.jsx        # Complete API reference documentation with sidebar nav & AI spec
 │   │   └── StatusPage.jsx      # System status & operational metrics dashboard
 │   ├── config.js               # Dynamic base URL resolution (VITE_API_URL || localhost:3000)
@@ -50,23 +50,21 @@ frontend/
 
 ## 3. Key Components & Specifications
 
-### `AiSpecButton.jsx` & `aiSpec.js`
-- Banner component featured on `HomePage` and `DocsPage`.
-- Contains a structured Markdown prompt specification optimized for LLMs (*ChatGPT, Claude, Gemini, Antigravity*).
-- Features **"Copy Spec for AI"** (copies to clipboard) and **"Download .md"** (downloads `MANDI-API-SPEC.md`).
-
 ### `PlaygroundPage.jsx`
-- **Cascading Selection Order**:
-  1. **Step 1: Select State** (e.g. *Maharashtra*)
-  2. **Step 2: Select Market / Mandi** (e.g. *Katol APMC* or *All Markets*)
-  3. **Step 3: Select Commodity / Crop** (dynamically queried based on State AND selected Market)
-- **Zero Empty Results**: Selecting a specific market automatically filters crops to **only those actually traded in that mandi**, guaranteeing 100% valid non-zero results.
-- **Dual Visualizer**: Toggle tabs between **"Pretty JSON"** (`JsonViewer`) and **"Price Chart"** (`PriceChart`).
+- **Ergonomic Full-Width Layout**:
+  - **Top Row**: 2 equal cards — **Request Builder** (Step 1 State, Step 2 Market, Step 3 Commodity) + **Integration Code Generator** (cURL, JS, Python, Go).
+  - **Bottom Row**: Full-width **Response Payload Console** housing the status HTTP badge, latency timer, ingestion time badge, and prominent toggle tabs for **"Pretty JSON"** and **"Price Chart Visualizer"**.
+- **100% Laptop & Screen Friendly**: Zero side-scrolling, zero horizontal button cut-off, and maximum space for reading JSON and viewing Chart.js line graphs.
 
 ### `CustomSelect.jsx`
 - Custom glassmorphism dropdown component with integrated real-time search input bar.
 - Used for State, Market/Mandi, and Commodity/Crop selection.
 - Features search filtering, sublabel/district badges, checkmark selection, and click-outside closing.
+
+### `AiSpecButton.jsx` & `aiSpec.js`
+- Banner component featured on `HomePage` and `DocsPage`.
+- Contains a structured Markdown prompt specification optimized for LLMs (*ChatGPT, Claude, Gemini, Antigravity*).
+- Features **"Copy Spec for AI"** (copies to clipboard) and **"Download .md"** (downloads `MANDI-API-SPEC.md`).
 
 ### `DocsPage.jsx`
 - Complete API reference documentation with sticky sidebar section navigation (`Overview`, `states`, `commodities`, `markets`, `prices`, `history`, `errors`), parameter tables, syntax-highlighted code snippets, and `AiSpecButton`.

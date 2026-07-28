@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Play, Filter, RefreshCw, Terminal, AlertCircle, MapPin, Sprout, Store, Clock } from 'lucide-react';
+import { Play, Filter, RefreshCw, Terminal, AlertCircle, MapPin, Sprout, Store, Clock, Code, Layers } from 'lucide-react';
 import CodeSnippet from '../components/CodeSnippet';
 import JsonViewer from '../components/JsonViewer';
 import PriceChart from '../components/PriceChart';
 import CustomSelect from '../components/CustomSelect';
+import StatusBadge from '../components/StatusBadge';
 import { API_BASE_URL, SUPPORTED_STATES } from '../config';
 
 export default function PlaygroundPage() {
@@ -169,55 +170,19 @@ export default function PlaygroundPage() {
 
   return (
     <div style={{ padding: '2rem 0' }}>
-      {/* Console Header Bar */}
-      <div style={{
-        display: 'flex',
-        justify: 'space-between',
-        alignItems: 'center',
-        background: '#0d121f',
-        padding: '0.75rem 1.25rem',
-        borderRadius: '12px 12px 0 0',
-        border: '1px solid var(--border-subtle)',
-        borderBottom: 'none',
-        flexWrap: 'wrap',
-        gap: '0.5rem'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <div style={{ display: 'flex', gap: '0.4rem' }}>
-            <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#ef4444' }} />
-            <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#f59e0b' }} />
-            <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#10b981' }} />
-          </div>
-          <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            <Terminal size={14} color="var(--accent-emerald)" /> API Console
-          </span>
+      {/* Page Header */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
+        <div>
+          <h2 style={{ fontSize: '2rem', fontWeight: 800 }}>API Interactive Console</h2>
+          <p style={{ color: 'var(--text-secondary)' }}>Build queries, generate code snippets, inspect live JSON, and plot price charts</p>
         </div>
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          {responseStatus && (
-            <span style={{
-              fontSize: '0.8rem',
-              fontWeight: 700,
-              padding: '0.2rem 0.6rem',
-              borderRadius: '6px',
-              background: responseStatus === 200 ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
-              color: responseStatus === 200 ? '#10b981' : '#ef4444',
-              border: `1px solid ${responseStatus === 200 ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)'}`
-            }}>
-              HTTP {responseStatus}
-            </span>
-          )}
-          {latency && (
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-              {latency}ms
-            </span>
-          )}
-        </div>
+        <StatusBadge />
       </div>
 
-      <div className="grid-2" style={{ marginBottom: '2rem', alignItems: 'start' }}>
-        {/* Left Column: Cascading Query Controls */}
-        <div className="glass-card" style={{ borderRadius: '0 0 16px 16px', borderTop: '1px solid var(--border-subtle)' }}>
+      {/* Top 2-Column Section: Request Controls + Code Snippet */}
+      <div className="grid-2" style={{ marginBottom: '2rem', alignItems: 'stretch' }}>
+        {/* Left Column: Request Builder */}
+        <div className="glass-card" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
           <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Filter size={18} color="var(--accent-emerald)" /> Request Builder
           </h3>
@@ -230,14 +195,14 @@ export default function PlaygroundPage() {
             <div style={{ display: 'flex', gap: '0.5rem' }}>
               <button 
                 className={`btn ${endpoint === '/v1/prices' ? 'btn-primary' : 'btn-secondary'}`}
-                style={{ flex: 1, padding: '0.5rem 0.75rem', fontSize: '0.85rem' }}
+                style={{ flex: 1, padding: '0.55rem 0.75rem', fontSize: '0.85rem' }}
                 onClick={() => setEndpoint('/v1/prices')}
               >
                 /v1/prices
               </button>
               <button 
                 className={`btn ${endpoint === '/v1/prices/history' ? 'btn-primary' : 'btn-secondary'}`}
-                style={{ flex: 1, padding: '0.5rem 0.75rem', fontSize: '0.85rem' }}
+                style={{ flex: 1, padding: '0.55rem 0.75rem', fontSize: '0.85rem' }}
                 onClick={() => setEndpoint('/v1/prices/history')}
               >
                 /v1/prices/history
@@ -270,10 +235,10 @@ export default function PlaygroundPage() {
             />
           </div>
 
-          {/* Step 3: Cascading Commodity Selector */}
-          <div style={{ marginBottom: '1.5rem' }}>
+          {/* Step 3: Commodity Selector */}
+          <div style={{ marginBottom: '1.5rem', flex: 1 }}>
             <CustomSelect
-              label={`Step 3: Commodity / Crop (${commoditiesList.length} available in selection)`}
+              label={`Step 3: Commodity / Crop (${commoditiesList.length} available)`}
               value={commodity}
               onChange={setCommodity}
               options={commoditiesList}
@@ -286,7 +251,7 @@ export default function PlaygroundPage() {
 
           <button 
             className="btn btn-primary" 
-            style={{ width: '100%', justifyContent: 'center' }}
+            style={{ width: '100%', justifyContent: 'center', marginTop: 'auto' }}
             onClick={handleExecute}
             disabled={loading}
           >
@@ -295,95 +260,134 @@ export default function PlaygroundPage() {
           </button>
         </div>
 
-        {/* Right Column: Code Generator & Dual Visualizer */}
-        <div>
-          <div style={{ marginBottom: '1.5rem' }}>
-            <h4 style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>
-              Integration Code Generator
-            </h4>
+        {/* Right Column: Code Snippet Generator */}
+        <div className="glass-card" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+          <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Code size={18} color="var(--accent-cyan)" /> Integration Code Generator
+          </h3>
+
+          <div style={{ flex: 1 }}>
             <CodeSnippet path={buildQueryPath()} />
           </div>
+        </div>
+      </div>
 
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem', flexWrap: 'wrap', gap: '0.5rem' }}>
-              <h4 style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-                Response Payload
-              </h4>
-
-              {/* View Toggle Tabs */}
-              <div style={{ display: 'flex', gap: '0.3rem', background: '#0d121f', padding: '0.25rem', borderRadius: '8px', border: '1px solid var(--border-subtle)' }}>
-                <button
-                  className={`code-tab ${activeViewTab === 'json' ? 'active' : ''}`}
-                  onClick={() => setActiveViewTab('json')}
-                  style={{ fontSize: '0.78rem', padding: '0.25rem 0.6rem' }}
-                >
-                  Pretty JSON
-                </button>
-                <button
-                  className={`code-tab ${activeViewTab === 'chart' ? 'active' : ''}`}
-                  onClick={() => setActiveViewTab('chart')}
-                  style={{ fontSize: '0.78rem', padding: '0.25rem 0.6rem' }}
-                >
-                  Price Chart
-                </button>
-              </div>
+      {/* Full-Width Bottom Section: Response Payload & Visualizer Console */}
+      <div style={{ borderRadius: '16px', overflow: 'hidden', border: '1px solid var(--border-subtle)', background: 'var(--bg-card)' }}>
+        {/* Console Header Bar */}
+        <div style={{
+          display: 'flex',
+          justify: 'space-between',
+          alignItems: 'center',
+          background: '#0d121f',
+          padding: '0.85rem 1.25rem',
+          borderBottom: '1px solid var(--border-subtle)',
+          flexWrap: 'wrap',
+          gap: '1rem'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', gap: '0.4rem' }}>
+              <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#ef4444' }} />
+              <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#f59e0b' }} />
+              <div style={{ width: 10, height: 10, borderRadius: '50%', background: '#10b981' }} />
             </div>
 
-            {/* Dynamic Ingestion Timestamp Badge */}
-            {latestIngestTime && (
-              <div style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                padding: '0.45rem 0.9rem',
-                borderRadius: '8px',
-                background: 'rgba(16, 185, 129, 0.1)',
-                border: '1px solid rgba(16, 185, 129, 0.3)',
-                color: '#10b981',
-                fontSize: '0.82rem',
-                fontWeight: 600,
-                marginBottom: '1rem',
-                maxWidth: '100%',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap'
+            <span style={{ fontSize: '0.9rem', color: '#fff', fontWeight: 700, fontFamily: 'var(--font-mono)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+              <Layers size={16} color="var(--accent-emerald)" /> Response Payload
+            </span>
+
+            {responseStatus && (
+              <span style={{
+                fontSize: '0.8rem',
+                fontWeight: 700,
+                padding: '0.2rem 0.6rem',
+                borderRadius: '6px',
+                background: responseStatus === 200 ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+                color: responseStatus === 200 ? '#10b981' : '#ef4444',
+                border: `1px solid ${responseStatus === 200 ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)'}`
               }}>
-                <Clock size={14} style={{ flexShrink: 0 }} />
-                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>Today's Closing Prices (Ingested: {latestIngestTime} IST)</span>
-              </div>
+                HTTP {responseStatus}
+              </span>
             )}
 
-            {/* Cold-start Warning Notice */}
-            {isWakingUp && (
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.6rem',
-                padding: '0.75rem 1rem',
-                borderRadius: '8px',
-                background: 'rgba(245, 158, 11, 0.1)',
-                border: '1px solid rgba(245, 158, 11, 0.3)',
-                color: '#f59e0b',
-                fontSize: '0.85rem',
-                marginBottom: '1rem',
-                animation: 'pulse 2s infinite'
-              }}>
-                <AlertCircle size={16} />
-                <span>Waking up backend server (this initial load takes 30-40s)...</span>
-              </div>
-            )}
-
-            {loading ? (
-              <div className="glass-card" style={{ textAlign: 'center', padding: '3rem 1rem' }}>
-                <RefreshCw size={24} className="spin" color="var(--accent-emerald)" style={{ margin: '0 auto 1rem auto', display: 'block' }} />
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>Querying Mandi Price API server...</p>
-              </div>
-            ) : activeViewTab === 'json' ? (
-              responseData && <JsonViewer data={responseData} />
-            ) : (
-              <PriceChart historyData={historyData || (responseData?.data || [])} commodity={commodity} state={selectedState} />
+            {latency && (
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                {latency}ms
+              </span>
             )}
           </div>
+
+          {/* View Toggle Tabs */}
+          <div style={{ display: 'flex', gap: '0.4rem', background: 'rgba(0,0,0,0.4)', padding: '0.3rem', borderRadius: '8px', border: '1px solid var(--border-subtle)' }}>
+            <button
+              className={`code-tab ${activeViewTab === 'json' ? 'active' : ''}`}
+              onClick={() => setActiveViewTab('json')}
+              style={{ fontSize: '0.85rem', padding: '0.35rem 0.85rem' }}
+            >
+              Pretty JSON
+            </button>
+            <button
+              className={`code-tab ${activeViewTab === 'chart' ? 'active' : ''}`}
+              onClick={() => setActiveViewTab('chart')}
+              style={{ fontSize: '0.85rem', padding: '0.35rem 0.85rem' }}
+            >
+              Price Chart Visualizer
+            </button>
+          </div>
+        </div>
+
+        {/* Console Body Padding */}
+        <div style={{ padding: '1.5rem' }}>
+          {/* Dynamic Ingestion Timestamp Badge */}
+          {latestIngestTime && (
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              padding: '0.45rem 0.9rem',
+              borderRadius: '8px',
+              background: 'rgba(16, 185, 129, 0.1)',
+              border: '1px solid rgba(16, 185, 129, 0.3)',
+              color: '#10b981',
+              fontSize: '0.85rem',
+              fontWeight: 600,
+              marginBottom: '1.25rem'
+            }}>
+              <Clock size={14} />
+              <span>Today's Closing Prices (Ingested: {latestIngestTime} IST)</span>
+            </div>
+          )}
+
+          {/* Cold-start Warning Notice */}
+          {isWakingUp && (
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.6rem',
+              padding: '0.75rem 1rem',
+              borderRadius: '8px',
+              background: 'rgba(245, 158, 11, 0.1)',
+              border: '1px solid rgba(245, 158, 11, 0.3)',
+              color: '#f59e0b',
+              fontSize: '0.88rem',
+              marginBottom: '1.25rem',
+              animation: 'pulse 2s infinite'
+            }}>
+              <AlertCircle size={16} />
+              <span>Waking up backend server (this initial load takes 30-40s)...</span>
+            </div>
+          )}
+
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: '3.5rem 1rem' }}>
+              <RefreshCw size={28} className="spin" color="var(--accent-emerald)" style={{ margin: '0 auto 1rem auto', display: 'block' }} />
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>Querying Mandi Price API server...</p>
+            </div>
+          ) : activeViewTab === 'json' ? (
+            responseData && <JsonViewer data={responseData} />
+          ) : (
+            <PriceChart historyData={historyData || (responseData?.data || [])} commodity={commodity} state={selectedState} />
+          )}
         </div>
       </div>
     </div>

@@ -12,7 +12,12 @@ Free, open, keyless REST API serving daily agricultural mandi (wholesale market)
 
 - **Open & Keyless:** No developer registration or API key required.
 - **5 Supported Indian States:** Maharashtra, Uttar Pradesh, Punjab, Madhya Pradesh, Karnataka.
-- **Daily Automated Ingestion:** Scheduled daily pull at 15:00 UTC (8:30 PM IST) via GitHub Actions.
+- **Searchable Custom Dropdowns:** Custom glassmorphism dropdowns with built-in real-time search bars (`CustomSelect.jsx`).
+- **Cascading Filter Logic:** Step 1 State ➔ Step 2 Market ➔ Step 3 Crop (guarantees 100% valid non-zero results).
+- **Build With AI Prompt Spec:** One-click copy/downloadable Markdown API spec optimized for LLMs (*ChatGPT, Claude, Gemini, Antigravity*).
+- **Dynamic Ingestion Timestamp Badge:** Live IST timestamp badge tracking exact Supabase ingestion time (`latest_fetched_at`).
+- **Docs Page ScrollSpy:** `IntersectionObserver` tracking active sections automatically as developers scroll.
+- **Daily Automated Ingestion:** Scheduled daily pull at 15:00 UTC (8:30 PM IST) via GitHub Actions running on Node.js 22.x.
 - **Rate Limited:** Protected by `express-rate-limit` (100 requests per 15 minutes per IP).
 - **Developer Portal & Interactive Playground:** Dark mode React portal with live request testing, code generators, JSON output viewer, and trend visualizer graphs.
 
@@ -22,28 +27,39 @@ Free, open, keyless REST API serving daily agricultural mandi (wholesale market)
 
 ```
 mandi-api/
-├── DOCS/
-│   └── MANDI-API-BUILD-SPEC.md
-├── backend/
+├── LICENSE                      # CC BY-NC-SA 4.0 International License
+├── README.md                    # Repository documentation & quick start guide
+├── DOCS/                        # Technical Architecture & Developer Guides
+│   ├── MANDI-API-BUILD-SPEC.md   # Initial build specification blueprint
+│   ├── FRONTEND.md               # Frontend architecture, components & ScrollSpy specs
+│   ├── BACKEND.md                # Backend REST API, schema & Node 22.x ingestion pipeline
+│   ├── FULL-API-APP.md           # End-to-end full-stack system architecture blueprint
+│   └── FUTURE-PLAN.md            # 1-year rolling retention policy & roadmap
+├── backend/                      # Node 22.x + Express 4.x REST API & Ingestion Pipeline
 │   ├── src/
 │   │   ├── index.js             # Express app, rate limiter, CORS, routes
 │   │   ├── db.js                # Supabase client singleton setup
 │   │   ├── validators.js        # Input validation & error envelope helpers
 │   │   └── controllers/
 │   │       ├── states.js        # GET /v1/states
-│   │       ├── commodities.js   # GET /v1/commodities
+│   │       ├── commodities.js   # GET /v1/commodities (supports state & market filtering)
 │   │       ├── markets.js       # GET /v1/markets
 │   │       └── prices.js        # GET /v1/prices & GET /v1/prices/history
 │   ├── scripts/
 │   │   ├── states.config.js    # State names & government spellings config
-│   │   └── ingest.js           # Daily pull & upsert script
+│   │   └── ingest.js           # Daily pull, pacing, deduplication & upsert script
 │   ├── schema.sql               # Supabase database table & index creation SQL
 │   ├── .env                     # Local environment configuration
 │   └── package.json
-├── frontend/
+├── frontend/                     # React 18 + Vite 6 Developer Portal
+│   ├── public/
+│   │   ├── favicon.png          # App icon & tab favicon
+│   │   └── logo.png             # Brand logo emblem
 │   ├── src/
-│   │   ├── components/         # Navbar, StatusBadge, CodeSnippet, JsonViewer, PriceChart
+│   │   ├── components/         # Navbar, StatusBadge, CustomSelect, AiSpecButton, CodeSnippet, PriceChart
 │   │   ├── pages/              # HomePage, PlaygroundPage, DocsPage, StatusPage
+│   │   ├── data/
+│   │   │   └── aiSpec.js       # Static LLM prompt spec module
 │   │   ├── App.jsx
 │   │   └── index.css            # Dark mode glassmorphism design system
 │   ├── vite.config.js
@@ -51,7 +67,7 @@ mandi-api/
 │   └── package.json
 └── .github/
     └── workflows/
-        └── daily-ingest.yml     # Daily GitHub Actions ingestion workflow
+        └── daily-ingest.yml     # Daily GitHub Actions ingestion workflow (Node 22.x)
 ```
 
 ---
@@ -115,7 +131,7 @@ All endpoints are prefixed with `/v1`:
 | Endpoint | Method | Required Params | Optional Params | Purpose |
 |---|---|---|---|---|
 | `/v1/states` | `GET` | — | — | List supported 5 Indian states |
-| `/v1/commodities` | `GET` | — | `state` | List distinct commodities |
+| `/v1/commodities` | `GET` | — | `state`, `market` | List distinct commodities (supports market filter) |
 | `/v1/markets` | `GET` | `state` | — | List active mandis in a state |
 | `/v1/prices` | `GET` | `state` OR `commodity` | `market`, `variety`, `date` | Latest crop prices matching filters |
 | `/v1/prices/history` | `GET` | `state`, `commodity` | `market`, `from`, `to` | Trend data over date ranges |
@@ -135,13 +151,15 @@ All endpoints are prefixed with `/v1`:
       "arrival_date": "2026-07-28",
       "min_price": 1200,
       "max_price": 1800,
-      "modal_price": 1500
+      "modal_price": 1500,
+      "fetched_at": "2026-07-28T20:31:05.000Z"
     }
   ],
   "meta": {
     "count": 1,
     "state": "Maharashtra",
-    "commodity": "Onion"
+    "commodity": "Onion",
+    "latest_fetched_at": "2026-07-28T20:31:05.000Z"
   }
 }
 ```

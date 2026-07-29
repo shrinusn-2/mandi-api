@@ -12,7 +12,12 @@ The **Mandi Price API** is a free, open, keyless REST API serving daily agricult
 ### Key Highlights
 - **Zero Friction**: Keyless, open API requiring no sign-up or registration.
 - **5 Major Indian States**: Maharashtra, Uttar Pradesh, Punjab, Madhya Pradesh, Karnataka.
-- **Real-Time Data Ingestion**: Automated daily pull at 15:00 UTC (8:30 PM IST) fetching ~3,500 records daily.
+- **Searchable Custom Dropdowns**: Integrated real-time search input bar (`CustomSelect.jsx`) for State, Market, and Crop selectors.
+- **Cascading Filter Order**: Step 1 State ➔ Step 2 Market ➔ Step 3 Crop (guarantees 100% valid non-zero results).
+- **Build With AI Prompt Spec**: One-click copy/downloadable Markdown spec for LLMs (*ChatGPT, Claude, Gemini, Antigravity*).
+- **Dynamic Ingestion Timestamp Badge**: Live IST timestamp badge tracking exact Supabase ingestion time (`latest_fetched_at`).
+- **Docs ScrollSpy**: `IntersectionObserver` in `DocsPage.jsx` tracking active sections automatically as developers scroll.
+- **Real-Time Data Ingestion**: Automated daily pull at 15:00 UTC (8:30 PM IST) fetching ~3,500 records daily running on Node 22.x.
 - **Developer Portal**: React-based dark-mode portal with interactive API playground, multi-language code generators (cURL, JS, Python, Go), JSON response viewer, and price trend visualizer graph.
 
 ---
@@ -25,7 +30,7 @@ The **Mandi Price API** is a free, open, keyless REST API serving daily agricult
                                │ (Ministry of Ag. API)   │
                                └────────────┬────────────┘
                                             │
-                                            │ Daily Cron (15:00 UTC)
+                                            │ Daily Cron (15:00 UTC / Node 22.x)
                                             ▼
 ┌────────────────────────┐     ┌─────────────────────────┐
 │     Supabase DB        │ ◄───┤  GitHub Actions Cron    │
@@ -46,11 +51,14 @@ The **Mandi Price API** is a free, open, keyless REST API serving daily agricult
 
 ```
 mandi-api/
+├── LICENSE                       # CC BY-NC-SA 4.0 International License
+├── README.md                     # Main repository overview & setup guide
 ├── DOCS/
-│   ├── MANDI-API-BUILD-SPEC.md   # Initial build specification
-│   ├── FRONTEND.md               # Detailed frontend architecture & UI specs
-│   ├── BACKEND.md                # Detailed backend API & ingestion script specs
-│   └── FULL-API-APP.md           # Master full-stack architecture blueprint
+│   ├── MANDI-API-BUILD-SPEC.md   # Initial build specification blueprint
+│   ├── FRONTEND.md               # Detailed frontend architecture, components & ScrollSpy specs
+│   ├── BACKEND.md                # Detailed backend API, schema & Node 22.x ingestion specs
+│   ├── FULL-API-APP.md           # Master full-stack architecture blueprint
+│   └── FUTURE-PLAN.md            # 1-year rolling retention policy & roadmap
 ├── backend/                      # Express 4.x REST API & Ingestion script
 │   ├── src/
 │   │   ├── index.js              # Express app entry & route definitions
@@ -64,9 +72,14 @@ mandi-api/
 │   ├── .env                      # Local environment variables
 │   └── package.json
 ├── frontend/                     # React 18 + Vite 6 Developer Portal
+│   ├── public/
+│   │   ├── favicon.png           # App icon & tab favicon
+│   │   └── logo.png              # Brand emblem logo
 │   ├── src/
-│   │   ├── components/           # Navbar, StatusBadge, RegionSelector, CodeSnippet, PriceChart
+│   │   ├── components/           # Navbar, StatusBadge, CustomSelect, AiSpecButton, CodeSnippet, PriceChart
 │   │   ├── pages/                # HomePage, PlaygroundPage, DocsPage, StatusPage
+│   │   ├── data/
+│   │   │   └── aiSpec.js         # Static LLM prompt spec module
 │   │   ├── config.js             # Base URL resolver
 │   │   ├── App.jsx               # SPA view shell
 │   │   └── index.css             # Glassmorphism design system
@@ -75,7 +88,7 @@ mandi-api/
 │   └── package.json
 └── .github/
     └── workflows/
-        └── daily-ingest.yml      # GitHub Actions daily cron workflow
+        └── daily-ingest.yml      # GitHub Actions daily cron workflow (Node 22.x)
 ```
 
 ---
@@ -97,4 +110,10 @@ mandi-api/
 1. **Database Setup**: Execute `backend/schema.sql` in Supabase SQL Editor.
 2. **Backend (Render)**: Deploy `backend/` as Web Service with `node src/index.js` start command.
 3. **Frontend (Vercel)**: Deploy `frontend/` with `VITE_API_URL` pointing to Render URL.
-4. **Daily Ingestion**: Configure GitHub Actions secrets (`SUPABASE_URL`, `SUPABASE_SERVICE_KEY`, `DATA_GOV_API_KEY`).
+4. **Daily Ingestion**: Configure GitHub Actions secrets (`SUPABASE_URL`, `SUPABASE_SERVICE_KEY`, `DATA_GOV_API_KEY`) on Node 22.x runner.
+
+---
+
+## 6. License & Attribution
+
+This project is licensed under **CC BY-NC-SA 4.0** (Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International). Copyright (c) 2026 shrinusn-2.

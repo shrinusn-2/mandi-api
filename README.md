@@ -1,5 +1,9 @@
 # Mandi Price API (v1 / MVP)
 
+[![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC_BY--NC--SA_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+
+Originally created by shrinusn-2 — first released July 2026. Open for community use and contribution under the license below.
+
 Free, open, keyless REST API serving daily agricultural mandi (wholesale market) prices across 5 major Indian states, sourced from the Government of India's open data portal (`data.gov.in`).
 
 ---
@@ -151,3 +155,9 @@ In your GitHub repository under **Settings → Secrets and variables → Actions
 - `SUPABASE_URL`: Your Supabase Project URL (`https://msdegzurpcbtaumdlmqc.supabase.co`)
 - `SUPABASE_SERVICE_KEY`: Your Supabase Service Role API Key
 - `DATA_GOV_API_KEY`: `<YOUR_DATA_GOV_API_KEY>`
+
+---
+
+## 📄 License
+
+This project is licensed under CC BY-NC-SA 4.0 — you're free to use, modify, and learn from this code for personal and non-commercial projects, with attribution. Commercial use or launching a competing paid service using this code is not permitted without permission. See [LICENSE](LICENSE) for details.

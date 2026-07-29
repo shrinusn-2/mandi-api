@@ -2,7 +2,11 @@ require('dotenv').config();
 const { supabase } = require('../src/db');
 const { SUPPORTED_STATES } = require('./states.config');
 
-const API_KEY = process.env.DATA_GOV_API_KEY || '579b464db66ec23bdd000001f24daa775e784d04427814ae73877b05';
+const API_KEY = process.env.DATA_GOV_API_KEY;
+if (!API_KEY) {
+  console.error('FATAL: DATA_GOV_API_KEY environment variable is missing.');
+  process.exit(1);
+}
 const RESOURCE_ID = '9ef84268-d588-465a-a308-a864a43d0070';
 const BASE_URL = `https://api.data.gov.in/resource/${RESOURCE_ID}`;
 

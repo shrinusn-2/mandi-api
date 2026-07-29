@@ -150,4 +150,4 @@ In your GitHub repository under **Settings → Secrets and variables → Actions
 
 - `SUPABASE_URL`: Your Supabase Project URL (`https://msdegzurpcbtaumdlmqc.supabase.co`)
 - `SUPABASE_SERVICE_KEY`: Your Supabase Service Role API Key
-- `DATA_GOV_API_KEY`: `579b464db66ec23bdd000001f24daa775e784d04427814ae73877b05`
+- `DATA_GOV_API_KEY`: `<YOUR_DATA_GOV_API_KEY>`

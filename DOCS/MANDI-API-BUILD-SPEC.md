@@ -16,7 +16,7 @@ A free, open, keyless REST API that serves daily agricultural mandi (wholesale m
 
 - **Source:** data.gov.in — resource `9ef84268-d588-465a-a308-a864a43d0070` ("Current Daily Price of Various Commodities from Various Markets (Mandi)")
 - **Owner:** Ministry of Agriculture and Farmers Welfare
-- **API key:** `579b464db66ec23bdd000001f24daa775e784d04427814ae73877b05` (store in `.env`, never commit to repo)
+- **API key:** `<YOUR_DATA_GOV_API_KEY>` (store in `.env`, never commit to repo)
 - **Base URL:** `https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070`
 - **Format:** JSON. Max `limit=100` per call (confirmed working). Use `offset` for pagination.
 - **Filter syntax:** `filters[state.keyword]=Maharashtra`
@@ -184,7 +184,7 @@ mandi-price-api/
 PORT=3000
 SUPABASE_URL=https://xxxx.supabase.co
 SUPABASE_SERVICE_KEY=your_service_role_key_here
-DATA_GOV_API_KEY=579b464db66ec23bdd000001f24daa775e784d04427814ae73877b05
+DATA_GOV_API_KEY=your_data_gov_api_key_here
 ```
 
 ### GitHub Actions secrets (set in repo Settings → Secrets → Actions)

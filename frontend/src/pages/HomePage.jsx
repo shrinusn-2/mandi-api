@@ -11,6 +11,32 @@ import { API_BASE_URL, SITE_URL } from '../config';
 const PAGE_TITLE = 'Mandi Price API — Free Daily Agricultural Market Prices for India';
 const PAGE_DESCRIPTION = 'Free, open, keyless REST API for daily Indian mandi (wholesale market) crop prices across Maharashtra, Uttar Pradesh, Punjab, Madhya Pradesh, and Karnataka. Sourced from data.gov.in.';
 
+const STRUCTURED_DATA = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      name: 'Mandi Price API',
+      url: SITE_URL,
+      description: PAGE_DESCRIPTION
+    },
+    {
+      '@type': 'SoftwareApplication',
+      name: 'Mandi Price API',
+      applicationCategory: 'DeveloperApplication',
+      operatingSystem: 'Any',
+      description: PAGE_DESCRIPTION,
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+      featureList: [
+        'Daily Indian mandi wholesale crop prices',
+        'No API key or authentication required',
+        'Coverage across 5 Indian states',
+        'Historical price trend data'
+      ]
+    }
+  ]
+};
+
 export default function HomePage() {
   const navigate = useNavigate();
   const [selectedState, setSelectedState] = useState('Maharashtra');
@@ -80,6 +106,7 @@ export default function HomePage() {
         <meta name="twitter:card" content="summary" />
         <meta name="twitter:title" content={PAGE_TITLE} />
         <meta name="twitter:description" content={PAGE_DESCRIPTION} />
+        <script type="application/ld+json">{JSON.stringify(STRUCTURED_DATA)}</script>
       </Helmet>
 
       {/* Hero Banner */}

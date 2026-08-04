@@ -12,14 +12,19 @@ Free, open, keyless REST API serving daily agricultural mandi (wholesale market)
 
 - **Open & Keyless:** No developer registration or API key required.
 - **5 Supported Indian States:** Maharashtra, Uttar Pradesh, Punjab, Madhya Pradesh, Karnataka.
-- **Searchable Custom Dropdowns:** Custom glassmorphism dropdowns with built-in real-time search bars (`CustomSelect.jsx`).
+- **Real Per-Page Routes:** `react-router-dom` gives `/`, `/playground`, `/docs`, and `/status` their own crawlable URLs, plus a `404` fallback — no longer a single-page tab switcher.
+- **SEO Foundation:** Per-page metadata (title/description/canonical/OG/Twitter) via `react-helmet-async`, JSON-LD structured data, and a build-time static-prerender step (Puppeteer) so crawlers get real HTML per route, not an empty shell. `robots.txt` and `sitemap.xml` are generated from the same route manifest at build time.
+- **Mobile-Responsive:** Collapsing hamburger nav, fluid type, and single-column layouts below 768px.
+- **Earthy/Harvest Design System:** A mandi rate-board–inspired visual identity (slate-green base, turmeric-gold/rust accents) instead of a generic dark-glass SaaS look — see `frontend/src/index.css`.
+- **Live Rate Board:** The homepage hero fetches and renders real current prices instead of marketing copy.
+- **Searchable Custom Dropdowns:** Custom dropdowns with built-in real-time search bars (`CustomSelect.jsx`); `RegionSelector.jsx` is a thin state-list wrapper around it.
 - **Cascading Filter Logic:** Step 1 State ➔ Step 2 Market ➔ Step 3 Crop (guarantees 100% valid non-zero results).
 - **Build With AI Prompt Spec:** One-click copy/downloadable Markdown API spec optimized for LLMs (*ChatGPT, Claude, Gemini, Antigravity*).
 - **Dynamic Ingestion Timestamp Badge:** Live IST timestamp badge tracking exact Supabase ingestion time (`latest_fetched_at`).
 - **Docs Page ScrollSpy:** `IntersectionObserver` tracking active sections automatically as developers scroll.
 - **Daily Automated Ingestion:** Scheduled daily pull at 15:00 UTC (8:30 PM IST) via GitHub Actions running on Node.js 22.x.
 - **Rate Limited:** Protected by `express-rate-limit` (100 requests per 15 minutes per IP).
-- **Developer Portal & Interactive Playground:** Dark mode React portal with live request testing, code generators, JSON output viewer, and trend visualizer graphs.
+- **Developer Portal & Interactive Playground:** React portal with live request testing, code generators, JSON output viewer, and trend visualizer graphs.
 
 ---
 
@@ -55,15 +60,20 @@ mandi-api/
 │   ├── public/
 │   │   ├── favicon.png          # App icon & tab favicon
 │   │   └── logo.png             # Brand logo emblem
+│   ├── scripts/
+│   │   └── prerender.js        # Postbuild static-prerender + sitemap.xml/robots.txt generator
 │   ├── src/
-│   │   ├── components/         # Navbar, StatusBadge, CustomSelect, AiSpecButton, CodeSnippet, PriceChart
-│   │   ├── pages/              # HomePage, PlaygroundPage, DocsPage, StatusPage
+│   │   ├── components/         # Navbar, StatusBadge, CustomSelect, RegionSelector, AiSpecButton, CodeSnippet, JsonViewer, PriceChart, Seo
+│   │   ├── pages/              # HomePage, PlaygroundPage, DocsPage, StatusPage, NotFoundPage
 │   │   ├── data/
 │   │   │   └── aiSpec.js       # Static LLM prompt spec module
-│   │   ├── App.jsx
-│   │   └── index.css            # Dark mode glassmorphism design system
+│   │   ├── routes.js           # Single route manifest (paths, nav labels, SEO titles/descriptions)
+│   │   ├── utils.js            # Shared formatters (e.g. formatIngestionTime)
+│   │   ├── config.js           # Base URL + SITE_URL resolution (Vite and plain-Node safe)
+│   │   ├── App.jsx             # react-router routes shell
+│   │   └── index.css            # Earthy/harvest mandi rate-board design system
 │   ├── vite.config.js
-│   ├── vercel.json              # Vercel SPA rewrite configuration
+│   ├── vercel.json              # Vercel SPA rewrite configuration (static files still win over the rewrite)
 │   └── package.json
 └── .github/
     └── workflows/
@@ -121,6 +131,8 @@ cd frontend
 npm install
 npm run dev
 ```
+
+For a production build (`npm run build`), set `VITE_SITE_URL` to the real deployed frontend domain (e.g. `https://mandi-api.vercel.app`) — it's used for canonical/OG tags, `sitemap.xml`, and `robots.txt`, all generated at build time by `scripts/prerender.js`. Without it, these fall back to a placeholder domain.
 
 ---
 

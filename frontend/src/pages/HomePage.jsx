@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Database, Zap, Globe, Sparkles, CheckCircle2, RefreshCw, AlertCircle, Clock } from 'lucide-react';
 import CodeSnippet from '../components/CodeSnippet';
 import RegionSelector from '../components/RegionSelector';
@@ -6,7 +7,8 @@ import JsonViewer from '../components/JsonViewer';
 import AiSpecButton from '../components/AiSpecButton';
 import { API_BASE_URL } from '../config';
 
-export default function HomePage({ setActiveTab }) {
+export default function HomePage() {
+  const navigate = useNavigate();
   const [selectedState, setSelectedState] = useState('Maharashtra');
   const [demoData, setDemoData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -100,10 +102,10 @@ export default function HomePage({ setActiveTab }) {
         </p>
 
         <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-          <button className="btn btn-primary" onClick={() => setActiveTab('playground')}>
+          <button className="btn btn-primary" onClick={() => navigate('/playground')}>
             Explore Playground <ArrowRight size={16} />
           </button>
-          <button className="btn btn-secondary" onClick={() => setActiveTab('docs')}>
+          <button className="btn btn-secondary" onClick={() => navigate('/docs')}>
             Read API Docs
           </button>
         </div>

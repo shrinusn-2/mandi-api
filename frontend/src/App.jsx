@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
 import PlaygroundPage from './pages/PlaygroundPage';
@@ -6,17 +7,17 @@ import DocsPage from './pages/DocsPage';
 import StatusPage from './pages/StatusPage';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('home');
-
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <Navbar activeTab={activeTab} setActiveTab={setActiveTab} />
-      
+      <Navbar />
+
       <main className="container" style={{ flex: 1, paddingBottom: '4rem' }}>
-        {activeTab === 'home' && <HomePage setActiveTab={setActiveTab} />}
-        {activeTab === 'playground' && <PlaygroundPage />}
-        {activeTab === 'docs' && <DocsPage />}
-        {activeTab === 'status' && <StatusPage />}
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/playground" element={<PlaygroundPage />} />
+          <Route path="/docs" element={<DocsPage />} />
+          <Route path="/status" element={<StatusPage />} />
+        </Routes>
       </main>
 
       <footer style={{

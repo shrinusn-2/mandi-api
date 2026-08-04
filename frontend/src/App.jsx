@@ -5,6 +5,7 @@ import HomePage from './pages/HomePage';
 import PlaygroundPage from './pages/PlaygroundPage';
 import DocsPage from './pages/DocsPage';
 import StatusPage from './pages/StatusPage';
+import NotFoundPage from './pages/NotFoundPage';
 import { ROUTES } from './routes';
 
 const PAGE_COMPONENTS = {
@@ -25,6 +26,7 @@ export default function App() {
             const Component = PAGE_COMPONENTS[path];
             return <Route key={path} path={path} element={<Component />} />;
           })}
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
 

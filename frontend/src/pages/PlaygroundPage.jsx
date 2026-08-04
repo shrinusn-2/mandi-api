@@ -23,6 +23,8 @@ export default function PlaygroundPage() {
   const [commoditiesList, setCommoditiesList] = useState([]);
   const [loadingMarkets, setLoadingMarkets] = useState(false);
   const [loadingCommodities, setLoadingCommodities] = useState(false);
+  const [marketsError, setMarketsError] = useState(null);
+  const [commoditiesError, setCommoditiesError] = useState(null);
 
   // Request execution state
   const [loading, setLoading] = useState(false);
@@ -37,6 +39,7 @@ export default function PlaygroundPage() {
   useEffect(() => {
     async function fetchMarkets() {
       setLoadingMarkets(true);
+      setMarketsError(null);
       try {
         const res = await fetch(`${API_BASE_URL}/v1/markets?state=${encodeURIComponent(selectedState)}`);
         const data = await res.json();
@@ -57,6 +60,8 @@ export default function PlaygroundPage() {
         }
       } catch (err) {
         console.error('Error fetching markets:', err);
+        setMarketsError('Could not load markets for this state.');
+        setMarketsList([{ label: 'All Markets (State Aggregate)', value: '' }]);
       } finally {
         setLoadingMarkets(false);
       }
@@ -69,6 +74,7 @@ export default function PlaygroundPage() {
   useEffect(() => {
     async function fetchCommodities() {
       setLoadingCommodities(true);
+      setCommoditiesError(null);
       try {
         let url = `${API_BASE_URL}/v1/commodities?state=${encodeURIComponent(selectedState)}`;
         if (market) {
@@ -88,6 +94,8 @@ export default function PlaygroundPage() {
         }
       } catch (err) {
         console.error('Error fetching commodities:', err);
+        setCommoditiesError('Could not load crops for this selection.');
+        setCommoditiesList([]);
       } finally {
         setLoadingCommodities(false);
       }
@@ -223,6 +231,9 @@ export default function PlaygroundPage() {
               disabled={loadingMarkets}
               icon={Store}
             />
+            {marketsError && (
+              <p style={{ color: 'var(--status-offline)', fontSize: '0.78rem', marginTop: '0.35rem' }}>{marketsError}</p>
+            )}
           </div>
 
           {/* Step 3: Commodity Selector */}
@@ -237,6 +248,9 @@ export default function PlaygroundPage() {
               disabled={loadingCommodities || commoditiesList.length === 0}
               icon={Sprout}
             />
+            {commoditiesError && (
+              <p style={{ color: 'var(--status-offline)', fontSize: '0.78rem', marginTop: '0.35rem' }}>{commoditiesError}</p>
+            )}
           </div>
 
           <button 

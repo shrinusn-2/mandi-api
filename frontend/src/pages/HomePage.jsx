@@ -5,7 +5,7 @@ import CodeSnippet from '../components/CodeSnippet';
 import RegionSelector from '../components/RegionSelector';
 import AiSpecButton from '../components/AiSpecButton';
 import Seo from '../components/Seo';
-import { API_BASE_URL, SITE_URL } from '../config';
+import { API_BASE_URL, SITE_URL, SUPPORTED_STATES } from '../config';
 import { ROUTES } from '../routes';
 import { formatIngestionTime } from '../utils';
 
@@ -212,7 +212,7 @@ export default function HomePage() {
       <div className="glass-card" style={{ textAlign: 'center', padding: '2rem' }}>
         <h4 style={{ color: 'var(--text-secondary)', marginBottom: '1rem' }}>Supported States in v1</h4>
         <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-          {['Maharashtra', 'Uttar Pradesh', 'Punjab', 'Madhya Pradesh', 'Karnataka'].map(st => (
+          {SUPPORTED_STATES.map(st => (
             <span key={st} style={{
               background: 'rgba(255, 255, 255, 0.05)',
               border: '1px solid var(--border-subtle)',

@@ -21,10 +21,19 @@ function writeSitemap() {
   console.log('Generated sitemap.xml from route manifest');
 }
 
+function writeRobotsTxt() {
+  const txt = `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}/sitemap.xml\n`;
+  writeFileSync(join(distDir, 'robots.txt'), txt);
+  console.log('Generated robots.txt');
+}
+
 async function prerenderRoute(browser, base, route) {
   const page = await browser.newPage();
   try {
-    await page.goto(`${base}${route.slice(1)}`, { waitUntil: 'networkidle0', timeout: 30000 });
+    // The backend can take 30-40s to wake from a cold start (see the
+    // "waking up" copy in PlaygroundPage.jsx/HomePage.jsx), so this needs
+    // real headroom beyond that, not just Puppeteer's 30s default.
+    await page.goto(`${base}${route.slice(1)}`, { waitUntil: 'networkidle0', timeout: 60000 });
     // networkidle0 already means data fetches settled; this only waits out
     // any still-visible loading spinner rather than a blind fixed delay.
     await page.waitForFunction(() => !document.querySelector('.spin'), { timeout: 10000 }).catch(() => {});
@@ -52,10 +61,20 @@ async function main() {
     // title/meta commit under CPU contention, capturing a stale <title>
     // for whichever route lost the race. Correctness over the modest
     // build-time saving here.
+    //
+    // Each route is independent, so one failing (e.g. backend cold-start
+    // timeout) shouldn't take the rest of the build down with it — the
+    // route just keeps vite build's plain SPA shell instead of a
+    // prerendered snapshot, and the build still succeeds.
     for (const route of ROUTES) {
-      await prerenderRoute(browser, base, route.path);
+      try {
+        await prerenderRoute(browser, base, route.path);
+      } catch (err) {
+        console.error(`Failed to prerender ${route.path}, leaving SPA shell in place:`, err.message);
+      }
     }
     writeSitemap();
+    writeRobotsTxt();
   } finally {
     await browser.close();
     await new Promise((resolve) => server.httpServer.close(resolve));

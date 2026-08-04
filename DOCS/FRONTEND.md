@@ -111,3 +111,4 @@ frontend/
   ```
   Static files (including the prerendered `dist/<route>/index.html` files) are served before this rewrite runs — confirmed against Vercel's routing precedence — so this rewrite only acts as the SPA fallback for paths without a prerendered snapshot.
 - **Prerendering on Vercel**: Vercel's build container is missing the shared libraries (`libnspr4.so` etc.) puppeteer's default bundled Chrome needs. `scripts/prerender.js` detects `process.env.VERCEL` and uses `@sparticuz/chromium` (a Chrome build made for serverless/build containers) in that case; local dev keeps using puppeteer's own Chrome unchanged.
+- **Google Search Console verification**: `public/google<id>.html` is the GSC ownership-verification file (static, served as-is at the site root by Vercel) — required once to add the site to Search Console and submit `sitemap.xml`. Not app functionality; safe to ignore/leave in place.

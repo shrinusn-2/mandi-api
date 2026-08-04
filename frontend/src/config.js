@@ -12,8 +12,7 @@ const nodeEnv = (typeof process !== 'undefined' && process.env) || {};
 
 export const API_BASE_URL = viteEnv.VITE_API_URL || nodeEnv.VITE_API_URL || 'http://localhost:3000';
 
-// TODO: replace with the real production domain before deploying
-export const SITE_URL = viteEnv.VITE_SITE_URL || nodeEnv.VITE_SITE_URL || 'https://mandi-api.example.com';
+export const SITE_URL = viteEnv.VITE_SITE_URL || nodeEnv.VITE_SITE_URL || 'https://mandi-api.vercel.app';
 
 export const SUPPORTED_STATES = [
   'Maharashtra',

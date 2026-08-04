@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Server, Database, CheckCircle2, AlertTriangle, RefreshCw, Zap, ShieldCheck, Activity } from 'lucide-react';
 import StatusBadge from '../components/StatusBadge';
-import { API_BASE_URL } from '../config';
+import { API_BASE_URL, SITE_URL } from '../config';
+
+const PAGE_TITLE = 'Service Status & Uptime | Mandi Price API';
+const PAGE_DESCRIPTION = 'Live status for the Mandi Price API — response latency, rate limit thresholds, daily ingestion pipeline health, and infrastructure specs.';
 
 export default function StatusPage() {
   const [health, setHealth] = useState(null);
@@ -31,6 +35,19 @@ export default function StatusPage() {
 
   return (
     <div style={{ padding: '2rem 0', maxWidth: '950px', margin: '0 auto' }}>
+      <Helmet>
+        <title>{PAGE_TITLE}</title>
+        <meta name="description" content={PAGE_DESCRIPTION} />
+        <link rel="canonical" href={`${SITE_URL}/status`} />
+        <meta property="og:title" content={PAGE_TITLE} />
+        <meta property="og:description" content={PAGE_DESCRIPTION} />
+        <meta property="og:url" content={`${SITE_URL}/status`} />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content={PAGE_TITLE} />
+        <meta name="twitter:description" content={PAGE_DESCRIPTION} />
+      </Helmet>
+
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
           <h2 style={{ fontSize: '2rem', fontWeight: 800 }}>Service Health & Status</h2>

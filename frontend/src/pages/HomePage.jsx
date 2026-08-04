@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { ArrowRight, Database, Zap, Globe, Sparkles, CheckCircle2, RefreshCw, AlertCircle, Clock } from 'lucide-react';
 import CodeSnippet from '../components/CodeSnippet';
 import RegionSelector from '../components/RegionSelector';
 import JsonViewer from '../components/JsonViewer';
 import AiSpecButton from '../components/AiSpecButton';
-import { API_BASE_URL } from '../config';
+import { API_BASE_URL, SITE_URL } from '../config';
+
+const PAGE_TITLE = 'Mandi Price API — Free Daily Agricultural Market Prices for India';
+const PAGE_DESCRIPTION = 'Free, open, keyless REST API for daily Indian mandi (wholesale market) crop prices across Maharashtra, Uttar Pradesh, Punjab, Madhya Pradesh, and Karnataka. Sourced from data.gov.in.';
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -65,6 +69,19 @@ export default function HomePage() {
 
   return (
     <div style={{ padding: '3rem 0' }}>
+      <Helmet>
+        <title>{PAGE_TITLE}</title>
+        <meta name="description" content={PAGE_DESCRIPTION} />
+        <link rel="canonical" href={SITE_URL} />
+        <meta property="og:title" content={PAGE_TITLE} />
+        <meta property="og:description" content={PAGE_DESCRIPTION} />
+        <meta property="og:url" content={SITE_URL} />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content={PAGE_TITLE} />
+        <meta name="twitter:description" content={PAGE_DESCRIPTION} />
+      </Helmet>
+
       {/* Hero Banner */}
       <div style={{ textAlign: 'center', maxWidth: '800px', margin: '0 auto 4rem auto' }}>
         <div style={{

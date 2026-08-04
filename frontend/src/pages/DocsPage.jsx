@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import CodeSnippet from '../components/CodeSnippet';
 import JsonViewer from '../components/JsonViewer';
 import AiSpecButton from '../components/AiSpecButton';
-import { API_BASE_URL } from '../config';
+import { API_BASE_URL, SITE_URL } from '../config';
+
+const PAGE_TITLE = 'API Documentation — Endpoints, Parameters & Examples | Mandi Price API';
+const PAGE_DESCRIPTION = 'Full reference for the Mandi Price API: /v1/states, /v1/commodities, /v1/markets, /v1/prices, and /v1/prices/history — request parameters, response envelopes, and error codes.';
 
 export default function DocsPage() {
   const [activeSection, setActiveSection] = useState('overview');
@@ -53,6 +57,19 @@ export default function DocsPage() {
 
   return (
     <div style={{ padding: '1.5rem 0', display: 'grid', gridTemplateColumns: '220px 1fr', gap: '1.5rem', alignItems: 'start' }}>
+      <Helmet>
+        <title>{PAGE_TITLE}</title>
+        <meta name="description" content={PAGE_DESCRIPTION} />
+        <link rel="canonical" href={`${SITE_URL}/docs`} />
+        <meta property="og:title" content={PAGE_TITLE} />
+        <meta property="og:description" content={PAGE_DESCRIPTION} />
+        <meta property="og:url" content={`${SITE_URL}/docs`} />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content={PAGE_TITLE} />
+        <meta name="twitter:description" content={PAGE_DESCRIPTION} />
+      </Helmet>
+
       {/* Sticky Navigation Sidebar with ScrollSpy */}
       <aside style={{ position: 'sticky', top: '80px', background: '#0d121f', padding: '0.85rem', borderRadius: '12px', border: '1px solid var(--border-subtle)' }}>
         <h4 style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '0.6rem', paddingLeft: '0.5rem' }}>

@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Play, Filter, RefreshCw, Terminal, AlertCircle, MapPin, Sprout, Store, Clock, Code, Layers } from 'lucide-react';
 import CodeSnippet from '../components/CodeSnippet';
 import JsonViewer from '../components/JsonViewer';
 import PriceChart from '../components/PriceChart';
 import CustomSelect from '../components/CustomSelect';
 import StatusBadge from '../components/StatusBadge';
-import { API_BASE_URL, SUPPORTED_STATES } from '../config';
+import { API_BASE_URL, SITE_URL, SUPPORTED_STATES } from '../config';
+
+const PAGE_TITLE = 'Interactive API Playground | Mandi Price API';
+const PAGE_DESCRIPTION = 'Test live Mandi Price API requests in your browser — pick a state, market, and crop, inspect the JSON response, plot price trend charts, and copy generated code in curl, JavaScript, Python, or Go.';
 
 export default function PlaygroundPage() {
   const [selectedState, setSelectedState] = useState('Maharashtra');
@@ -170,6 +174,19 @@ export default function PlaygroundPage() {
 
   return (
     <div style={{ padding: '1.25rem 0' }}>
+      <Helmet>
+        <title>{PAGE_TITLE}</title>
+        <meta name="description" content={PAGE_DESCRIPTION} />
+        <link rel="canonical" href={`${SITE_URL}/playground`} />
+        <meta property="og:title" content={PAGE_TITLE} />
+        <meta property="og:description" content={PAGE_DESCRIPTION} />
+        <meta property="og:url" content={`${SITE_URL}/playground`} />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content={PAGE_TITLE} />
+        <meta name="twitter:description" content={PAGE_DESCRIPTION} />
+      </Helmet>
+
       {/* Compact Header Bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
         <div>

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import StatusBadge from './StatusBadge';
+import { ROUTES } from '../routes';
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -32,18 +33,16 @@ export default function Navbar() {
         </NavLink>
 
         <nav className={`nav-links ${menuOpen ? 'open' : ''}`}>
-          <NavLink to="/" end className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
-            Overview
-          </NavLink>
-          <NavLink to="/playground" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
-            Playground
-          </NavLink>
-          <NavLink to="/docs" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
-            Docs
-          </NavLink>
-          <NavLink to="/status" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
-            Status
-          </NavLink>
+          {ROUTES.map(({ path, navLabel, navEnd }) => (
+            <NavLink
+              key={path}
+              to={path}
+              end={navEnd}
+              className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+            >
+              {navLabel}
+            </NavLink>
+          ))}
         </nav>
 
         <button

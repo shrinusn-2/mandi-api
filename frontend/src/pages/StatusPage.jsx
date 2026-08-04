@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Helmet } from 'react-helmet-async';
 import { Server, Database, CheckCircle2, AlertTriangle, RefreshCw, Zap, ShieldCheck, Activity } from 'lucide-react';
 import StatusBadge from '../components/StatusBadge';
-import { API_BASE_URL, SITE_URL } from '../config';
+import Seo from '../components/Seo';
+import { API_BASE_URL } from '../config';
+import { ROUTES } from '../routes';
 
-const PAGE_TITLE = 'Service Status & Uptime | Mandi Price API';
-const PAGE_DESCRIPTION = 'Live status for the Mandi Price API — response latency, rate limit thresholds, daily ingestion pipeline health, and infrastructure specs.';
+const { title: PAGE_TITLE, description: PAGE_DESCRIPTION } = ROUTES.find((r) => r.path === '/status');
 
 export default function StatusPage() {
   const [health, setHealth] = useState(null);
@@ -35,18 +35,7 @@ export default function StatusPage() {
 
   return (
     <div style={{ padding: '2rem 0', maxWidth: '950px', margin: '0 auto' }}>
-      <Helmet>
-        <title>{PAGE_TITLE}</title>
-        <meta name="description" content={PAGE_DESCRIPTION} />
-        <link rel="canonical" href={`${SITE_URL}/status`} />
-        <meta property="og:title" content={PAGE_TITLE} />
-        <meta property="og:description" content={PAGE_DESCRIPTION} />
-        <meta property="og:url" content={`${SITE_URL}/status`} />
-        <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:title" content={PAGE_TITLE} />
-        <meta name="twitter:description" content={PAGE_DESCRIPTION} />
-      </Helmet>
+      <Seo title={PAGE_TITLE} description={PAGE_DESCRIPTION} path="/status" />
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
@@ -90,7 +79,7 @@ export default function StatusPage() {
         </div>
 
         <div className="glass-card">
-          <div style={{ color: 'var(--accent-amber)', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div style={{ color: 'var(--status-warn)', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <ShieldCheck size={22} />
             <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>UPTIME TARGET</span>
           </div>

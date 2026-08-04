@@ -1,12 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { Helmet } from 'react-helmet-async';
 import CodeSnippet from '../components/CodeSnippet';
 import JsonViewer from '../components/JsonViewer';
 import AiSpecButton from '../components/AiSpecButton';
-import { API_BASE_URL, SITE_URL } from '../config';
+import Seo from '../components/Seo';
+import { API_BASE_URL } from '../config';
+import { ROUTES } from '../routes';
 
-const PAGE_TITLE = 'API Documentation — Endpoints, Parameters & Examples | Mandi Price API';
-const PAGE_DESCRIPTION = 'Full reference for the Mandi Price API: /v1/states, /v1/commodities, /v1/markets, /v1/prices, and /v1/prices/history — request parameters, response envelopes, and error codes.';
+const { title: PAGE_TITLE, description: PAGE_DESCRIPTION } = ROUTES.find((r) => r.path === '/docs');
+
+function MethodBadge({ method }) {
+  return (
+    <span style={{ background: 'var(--accent-gold)', color: 'var(--bg-dark)', padding: '0.15rem 0.5rem', borderRadius: '4px', fontWeight: 700, fontSize: '0.75rem' }}>
+      {method}
+    </span>
+  );
+}
 
 export default function DocsPage() {
   const [activeSection, setActiveSection] = useState('overview');
@@ -57,21 +65,10 @@ export default function DocsPage() {
 
   return (
     <div className="sidebar-grid" style={{ padding: '1.5rem 0' }}>
-      <Helmet>
-        <title>{PAGE_TITLE}</title>
-        <meta name="description" content={PAGE_DESCRIPTION} />
-        <link rel="canonical" href={`${SITE_URL}/docs`} />
-        <meta property="og:title" content={PAGE_TITLE} />
-        <meta property="og:description" content={PAGE_DESCRIPTION} />
-        <meta property="og:url" content={`${SITE_URL}/docs`} />
-        <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:title" content={PAGE_TITLE} />
-        <meta name="twitter:description" content={PAGE_DESCRIPTION} />
-      </Helmet>
+      <Seo title={PAGE_TITLE} description={PAGE_DESCRIPTION} path="/docs" />
 
       {/* Sticky Navigation Sidebar with ScrollSpy */}
-      <aside style={{ position: 'sticky', top: '80px', background: '#16231d', padding: '0.85rem', borderRadius: '12px', border: '1px solid var(--border-subtle)' }}>
+      <aside style={{ position: 'sticky', top: '80px', background: 'var(--bg-recessed)', padding: '0.85rem', borderRadius: '12px', border: '1px solid var(--border-subtle)' }}>
         <h4 style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '0.6rem', paddingLeft: '0.5rem' }}>
           Documentation Nav
         </h4>
@@ -142,9 +139,7 @@ export default function DocsPage() {
         {/* GET /v1/states */}
         <section id="states" className="glass-card" style={{ padding: '1.25rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.5rem' }}>
-            <span style={{ background: '#d89b3c', color: '#14201c', padding: '0.15rem 0.5rem', borderRadius: '4px', fontWeight: 700, fontSize: '0.75rem' }}>
-              GET
-            </span>
+            <MethodBadge method="GET" />
             <code style={{ fontSize: '1rem', fontWeight: 600 }}>/v1/states</code>
           </div>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', marginBottom: '0.75rem' }}>
@@ -156,9 +151,7 @@ export default function DocsPage() {
         {/* GET /v1/commodities */}
         <section id="commodities" className="glass-card" style={{ padding: '1.25rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.5rem' }}>
-            <span style={{ background: '#d89b3c', color: '#14201c', padding: '0.15rem 0.5rem', borderRadius: '4px', fontWeight: 700, fontSize: '0.75rem' }}>
-              GET
-            </span>
+            <MethodBadge method="GET" />
             <code style={{ fontSize: '1rem', fontWeight: 600 }}>/v1/commodities</code>
           </div>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', marginBottom: '0.75rem' }}>
@@ -196,9 +189,7 @@ export default function DocsPage() {
         {/* GET /v1/markets */}
         <section id="markets" className="glass-card" style={{ padding: '1.25rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.5rem' }}>
-            <span style={{ background: '#d89b3c', color: '#14201c', padding: '0.15rem 0.5rem', borderRadius: '4px', fontWeight: 700, fontSize: '0.75rem' }}>
-              GET
-            </span>
+            <MethodBadge method="GET" />
             <code style={{ fontSize: '1rem', fontWeight: 600 }}>/v1/markets</code>
           </div>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', marginBottom: '0.75rem' }}>
@@ -230,9 +221,7 @@ export default function DocsPage() {
         {/* GET /v1/prices */}
         <section id="prices" className="glass-card" style={{ padding: '1.25rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.5rem' }}>
-            <span style={{ background: '#d89b3c', color: '#14201c', padding: '0.15rem 0.5rem', borderRadius: '4px', fontWeight: 700, fontSize: '0.75rem' }}>
-              GET
-            </span>
+            <MethodBadge method="GET" />
             <code style={{ fontSize: '1rem', fontWeight: 600 }}>/v1/prices</code>
           </div>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', marginBottom: '0.75rem' }}>
@@ -244,9 +233,7 @@ export default function DocsPage() {
         {/* GET /v1/prices/history */}
         <section id="history" className="glass-card" style={{ padding: '1.25rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.5rem' }}>
-            <span style={{ background: '#d89b3c', color: '#14201c', padding: '0.15rem 0.5rem', borderRadius: '4px', fontWeight: 700, fontSize: '0.75rem' }}>
-              GET
-            </span>
+            <MethodBadge method="GET" />
             <code style={{ fontSize: '1.1rem', fontWeight: 600 }}>/v1/prices/history</code>
           </div>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', marginBottom: '0.75rem' }}>
@@ -257,7 +244,7 @@ export default function DocsPage() {
 
         {/* Errors & Rate Limits */}
         <section id="errors" className="glass-card" style={{ padding: '1.25rem' }}>
-          <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.5rem', color: '#e0654a' }}>
+          <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.5rem', color: 'var(--status-offline)' }}>
             Errors & Rate Limits
           </h3>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', marginBottom: '0.75rem' }}>

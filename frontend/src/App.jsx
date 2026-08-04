@@ -5,6 +5,14 @@ import HomePage from './pages/HomePage';
 import PlaygroundPage from './pages/PlaygroundPage';
 import DocsPage from './pages/DocsPage';
 import StatusPage from './pages/StatusPage';
+import { ROUTES } from './routes';
+
+const PAGE_COMPONENTS = {
+  '/': HomePage,
+  '/playground': PlaygroundPage,
+  '/docs': DocsPage,
+  '/status': StatusPage
+};
 
 export default function App() {
   return (
@@ -13,10 +21,10 @@ export default function App() {
 
       <main className="container" style={{ flex: 1, paddingBottom: '4rem' }}>
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/playground" element={<PlaygroundPage />} />
-          <Route path="/docs" element={<DocsPage />} />
-          <Route path="/status" element={<StatusPage />} />
+          {ROUTES.map(({ path }) => {
+            const Component = PAGE_COMPONENTS[path];
+            return <Route key={path} path={path} element={<Component />} />;
+          })}
         </Routes>
       </main>
 

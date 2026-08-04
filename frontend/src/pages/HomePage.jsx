@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
 import { ArrowRight, CheckCircle2, RefreshCw, AlertCircle, Clock } from 'lucide-react';
 import CodeSnippet from '../components/CodeSnippet';
 import RegionSelector from '../components/RegionSelector';
 import AiSpecButton from '../components/AiSpecButton';
+import Seo from '../components/Seo';
 import { API_BASE_URL, SITE_URL } from '../config';
+import { ROUTES } from '../routes';
+import { formatIngestionTime } from '../utils';
 
-const PAGE_TITLE = 'Mandi Price API — Free Daily Agricultural Market Prices for India';
-const PAGE_DESCRIPTION = 'Free, open, keyless REST API for daily Indian mandi (wholesale market) crop prices across Maharashtra, Uttar Pradesh, Punjab, Madhya Pradesh, and Karnataka. Sourced from data.gov.in.';
+const { title: PAGE_TITLE, description: PAGE_DESCRIPTION } = ROUTES.find((r) => r.path === '/');
 
 const STRUCTURED_DATA = {
   '@context': 'https://schema.org',
@@ -73,42 +74,13 @@ export default function HomePage() {
     fetchDemo(selectedState);
   }, [selectedState]);
 
-  const formatIngestionTime = (isoString) => {
-    if (!isoString) return null;
-    try {
-      return new Date(isoString).toLocaleString('en-IN', {
-        timeZone: 'Asia/Kolkata',
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: true
-      });
-    } catch (e) {
-      return null;
-    }
-  };
-
   const latestIngestTime = demoData?.meta?.latest_fetched_at ? formatIngestionTime(demoData.meta.latest_fetched_at) : null;
   const boardRows = demoData?.success ? demoData.data.slice(0, 6) : [];
   const recordCount = demoData?.success ? demoData.meta?.count ?? demoData.data.length : null;
 
   return (
     <div style={{ padding: '3rem 0' }}>
-      <Helmet>
-        <title>{PAGE_TITLE}</title>
-        <meta name="description" content={PAGE_DESCRIPTION} />
-        <link rel="canonical" href={SITE_URL} />
-        <meta property="og:title" content={PAGE_TITLE} />
-        <meta property="og:description" content={PAGE_DESCRIPTION} />
-        <meta property="og:url" content={SITE_URL} />
-        <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:title" content={PAGE_TITLE} />
-        <meta name="twitter:description" content={PAGE_DESCRIPTION} />
-        <script type="application/ld+json">{JSON.stringify(STRUCTURED_DATA)}</script>
-      </Helmet>
+      <Seo title={PAGE_TITLE} description={PAGE_DESCRIPTION} path="/" structuredData={STRUCTURED_DATA} />
 
       {/* Hero: a live mandi rate board, not a marketing tagline */}
       <div style={{ maxWidth: '820px', margin: '0 auto 3rem auto', textAlign: 'center' }}>
@@ -163,7 +135,9 @@ export default function HomePage() {
                 <div className="rate-board-commodity">{row.commodity}</div>
                 <div className="rate-board-market">{row.market}, {row.district}</div>
               </div>
-              <div className="rate-board-price">₹{Number(row.modal_price).toLocaleString('en-IN')}/qtl</div>
+              <div className="rate-board-price">
+                {row.modal_price != null ? `₹${Number(row.modal_price).toLocaleString('en-IN')}/qtl` : 'N/A'}
+              </div>
             </div>
           ))
         ) : (
@@ -251,7 +225,7 @@ export default function HomePage() {
               alignItems: 'center',
               gap: '0.4rem'
             }}>
-              <CheckCircle2 size={14} color="#d89b3c" /> {st}
+              <CheckCircle2 size={14} color="var(--accent-gold)" /> {st}
             </span>
           ))}
         </div>

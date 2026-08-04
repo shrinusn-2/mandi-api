@@ -23,6 +23,19 @@ ChartJS.register(
   Filler
 );
 
+// Chart.js renders to canvas and can't resolve CSS custom properties,
+// so these mirror the palette tokens in index.css as plain values.
+const CHART_COLORS = {
+  gold: '#d89b3c',
+  goldFill: 'rgba(216, 155, 60, 0.15)',
+  rust: '#b5502e',
+  wheat: '#e8c468',
+  textPrimary: '#ede6d6',
+  textSecondary: '#b8ac97',
+  gridLine: 'rgba(255, 255, 255, 0.05)',
+  font: 'IBM Plex Sans'
+};
+
 export default function PriceChart({ historyData, commodity, state }) {
   if (!historyData || historyData.length === 0) {
     return (
@@ -45,18 +58,18 @@ export default function PriceChart({ historyData, commodity, state }) {
       {
         label: 'Modal Price (₹/Quintal)',
         data: modalPrices,
-        borderColor: '#d89b3c',
-        backgroundColor: 'rgba(216, 155, 60, 0.15)',
+        borderColor: CHART_COLORS.gold,
+        backgroundColor: CHART_COLORS.goldFill,
         borderWidth: 3,
         fill: true,
         tension: 0.3,
-        pointBackgroundColor: '#d89b3c',
+        pointBackgroundColor: CHART_COLORS.gold,
         pointRadius: 4
       },
       {
         label: 'Min Price (₹)',
         data: minPrices,
-        borderColor: '#b5502e',
+        borderColor: CHART_COLORS.rust,
         borderWidth: 1.5,
         borderDash: [4, 4],
         pointRadius: 0,
@@ -65,7 +78,7 @@ export default function PriceChart({ historyData, commodity, state }) {
       {
         label: 'Max Price (₹)',
         data: maxPrices,
-        borderColor: '#e8c468',
+        borderColor: CHART_COLORS.wheat,
         borderWidth: 1.5,
         borderDash: [4, 4],
         pointRadius: 0,
@@ -81,25 +94,25 @@ export default function PriceChart({ historyData, commodity, state }) {
       legend: {
         position: 'top',
         labels: {
-          color: '#b8ac97',
-          font: { family: 'Plus Jakarta Sans', size: 12 }
+          color: CHART_COLORS.textSecondary,
+          font: { family: CHART_COLORS.font, size: 12 }
         }
       },
       title: {
         display: true,
         text: `Daily Price Trends — ${commodity} (${state})`,
-        color: '#ede6d6',
-        font: { family: 'Plus Jakarta Sans', size: 15, weight: '700' }
+        color: CHART_COLORS.textPrimary,
+        font: { family: CHART_COLORS.font, size: 15, weight: '700' }
       }
     },
     scales: {
       x: {
-        grid: { color: 'rgba(255, 255, 255, 0.05)' },
-        ticks: { color: '#b8ac97' }
+        grid: { color: CHART_COLORS.gridLine },
+        ticks: { color: CHART_COLORS.textSecondary }
       },
       y: {
-        grid: { color: 'rgba(255, 255, 255, 0.05)' },
-        ticks: { color: '#b8ac97' }
+        grid: { color: CHART_COLORS.gridLine },
+        ticks: { color: CHART_COLORS.textSecondary }
       }
     }
   };

@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Helmet } from 'react-helmet-async';
 import { Play, Filter, RefreshCw, Terminal, AlertCircle, MapPin, Sprout, Store, Clock, Code, Layers } from 'lucide-react';
 import CodeSnippet from '../components/CodeSnippet';
 import JsonViewer from '../components/JsonViewer';
 import PriceChart from '../components/PriceChart';
 import CustomSelect from '../components/CustomSelect';
 import StatusBadge from '../components/StatusBadge';
-import { API_BASE_URL, SITE_URL, SUPPORTED_STATES } from '../config';
+import Seo from '../components/Seo';
+import { API_BASE_URL, SUPPORTED_STATES } from '../config';
+import { ROUTES } from '../routes';
+import { formatIngestionTime } from '../utils';
 
-const PAGE_TITLE = 'Interactive API Playground | Mandi Price API';
-const PAGE_DESCRIPTION = 'Test live Mandi Price API requests in your browser — pick a state, market, and crop, inspect the JSON response, plot price trend charts, and copy generated code in curl, JavaScript, Python, or Go.';
+const { title: PAGE_TITLE, description: PAGE_DESCRIPTION } = ROUTES.find((r) => r.path === '/playground');
 
 export default function PlaygroundPage() {
   const [selectedState, setSelectedState] = useState('Maharashtra');
@@ -153,39 +154,11 @@ export default function PlaygroundPage() {
     handleExecute();
   }, [endpoint, selectedState, market, commodity]);
 
-  const formatIngestionTime = (isoString) => {
-    if (!isoString) return null;
-    try {
-      return new Date(isoString).toLocaleString('en-IN', {
-        timeZone: 'Asia/Kolkata',
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: true
-      });
-    } catch (e) {
-      return null;
-    }
-  };
-
   const latestIngestTime = responseData?.meta?.latest_fetched_at ? formatIngestionTime(responseData.meta.latest_fetched_at) : null;
 
   return (
     <div style={{ padding: '1.25rem 0' }}>
-      <Helmet>
-        <title>{PAGE_TITLE}</title>
-        <meta name="description" content={PAGE_DESCRIPTION} />
-        <link rel="canonical" href={`${SITE_URL}/playground`} />
-        <meta property="og:title" content={PAGE_TITLE} />
-        <meta property="og:description" content={PAGE_DESCRIPTION} />
-        <meta property="og:url" content={`${SITE_URL}/playground`} />
-        <meta property="og:type" content="website" />
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:title" content={PAGE_TITLE} />
-        <meta name="twitter:description" content={PAGE_DESCRIPTION} />
-      </Helmet>
+      <Seo title={PAGE_TITLE} description={PAGE_DESCRIPTION} path="/playground" />
 
       {/* Compact Header Bar */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
@@ -284,7 +257,7 @@ export default function PlaygroundPage() {
             display: 'flex',
             justify: 'space-between',
             alignItems: 'center',
-            background: '#16231d',
+            background: 'var(--bg-recessed)',
             padding: '0.65rem 1rem',
             borderBottom: '1px solid var(--border-subtle)',
             flexWrap: 'wrap',
@@ -292,8 +265,8 @@ export default function PlaygroundPage() {
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
               <div style={{ display: 'flex', gap: '0.35rem' }}>
-                <div style={{ width: 9, height: 9, borderRadius: '50%', background: '#e0654a' }} />
-                <div style={{ width: 9, height: 9, borderRadius: '50%', background: '#e8c468' }} />
+                <div style={{ width: 9, height: 9, borderRadius: '50%', background: 'var(--status-offline)' }} />
+                <div style={{ width: 9, height: 9, borderRadius: '50%', background: 'var(--status-warn)' }} />
                 <div style={{ width: 9, height: 9, borderRadius: '50%', background: 'var(--status-online)' }} />
               </div>
 
@@ -360,7 +333,7 @@ export default function PlaygroundPage() {
                 borderRadius: '6px',
                 background: 'rgba(216, 155, 60, 0.1)',
                 border: '1px solid rgba(216, 155, 60, 0.3)',
-                color: '#d89b3c',
+                color: 'var(--accent-gold)',
                 fontSize: '0.8rem',
                 fontWeight: 600,
                 marginBottom: '0.85rem'
@@ -380,7 +353,7 @@ export default function PlaygroundPage() {
                 borderRadius: '6px',
                 background: 'rgba(232, 196, 104, 0.1)',
                 border: '1px solid rgba(232, 196, 104, 0.3)',
-                color: '#e8c468',
+                color: 'var(--status-warn)',
                 fontSize: '0.82rem',
                 marginBottom: '0.85rem',
                 animation: 'pulse 2s infinite'

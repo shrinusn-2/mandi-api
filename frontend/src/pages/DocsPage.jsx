@@ -56,7 +56,7 @@ export default function DocsPage() {
   };
 
   return (
-    <div style={{ padding: '1.5rem 0', display: 'grid', gridTemplateColumns: '220px 1fr', gap: '1.5rem', alignItems: 'start' }}>
+    <div className="sidebar-grid" style={{ padding: '1.5rem 0' }}>
       <Helmet>
         <title>{PAGE_TITLE}</title>
         <meta name="description" content={PAGE_DESCRIPTION} />

@@ -197,7 +197,7 @@ export default function PlaygroundPage() {
       </div>
 
       {/* Split Console Container */}
-      <div style={{ display: 'grid', gridTemplateColumns: '360px 1fr', gap: '1.25rem', alignItems: 'start' }}>
+      <div className="console-grid">
         {/* Left Column: Compact Request Controls */}
         <div className="glass-card" style={{ padding: '1.25rem' }}>
           <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>

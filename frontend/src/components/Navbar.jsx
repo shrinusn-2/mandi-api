@@ -1,9 +1,16 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
-import { Sprout } from 'lucide-react';
+import React, { useState } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
+import { Menu, X } from 'lucide-react';
 import StatusBadge from './StatusBadge';
 
 export default function Navbar() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation();
+
+  React.useEffect(() => {
+    setMenuOpen(false);
+  }, [location.pathname]);
+
   return (
     <header className="header-nav">
       <div className="container nav-container">
@@ -18,13 +25,13 @@ export default function Navbar() {
           </div>
           <div>
             <span>Mandi<span style={{ color: 'var(--accent-emerald)' }}>API</span></span>
-            <span style={{ fontSize: '0.75rem', display: 'block', color: 'var(--text-muted)', fontWeight: 500, lineHeight: 1 }}>
+            <span className="logo-subtitle" style={{ fontSize: '0.75rem', display: 'block', color: 'var(--text-muted)', fontWeight: 500, lineHeight: 1 }}>
               v1 / Open Ag-Data
             </span>
           </div>
         </NavLink>
 
-        <nav className="nav-links">
+        <nav className={`nav-links ${menuOpen ? 'open' : ''}`}>
           <NavLink to="/" end className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
             Overview
           </NavLink>
@@ -38,6 +45,16 @@ export default function Navbar() {
             Status
           </NavLink>
         </nav>
+
+        <button
+          type="button"
+          className="nav-toggle"
+          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen((open) => !open)}
+        >
+          {menuOpen ? <X size={20} /> : <Menu size={20} />}
+        </button>
 
         <StatusBadge />
       </div>

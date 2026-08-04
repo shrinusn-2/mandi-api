@@ -87,6 +87,7 @@ button {
 }
 
 .nav-container {
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -120,6 +121,61 @@ button {
   padding: 0.3rem;
   border-radius: 12px;
   border: 1px solid var(--border-subtle);
+}
+
+.nav-toggle {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  padding: 0.5rem;
+  border-radius: 8px;
+}
+
+@media (max-width: 720px) {
+  .nav-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .nav-links.open {
+    display: flex;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 0.5rem;
+    flex-direction: column;
+    align-items: stretch;
+    background: var(--bg-card-hover);
+    border-radius: 12px;
+    padding: 0.5rem;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+  }
+
+  .nav-links.open .nav-link {
+    text-align: left;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-subtitle {
+    display: none;
+  }
+
+  .status-pill span {
+    display: none;
+  }
+
+  .status-pill {
+    padding: 0.4rem;
+  }
 }
 
 .nav-link {
@@ -312,5 +368,36 @@ button {
 @media (max-width: 768px) {
   .grid-2, .grid-3 {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Fixed-width sidebar/column grids used on Docs & Playground */
+.sidebar-grid {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.console-grid {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .sidebar-grid, .console-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.region-selector-wrap {
+  width: 220px;
+}
+
+@media (max-width: 480px) {
+  .region-selector-wrap {
+    width: 100%;
   }
 }

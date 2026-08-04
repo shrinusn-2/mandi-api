@@ -128,7 +128,7 @@ export default function HomePage() {
         </div>
         
         <h1 style={{
-          fontSize: '3rem',
+          fontSize: 'clamp(1.9rem, 4vw + 1rem, 3rem)',
           fontWeight: 800,
           lineHeight: 1.15,
           letterSpacing: '-0.03em',
@@ -145,7 +145,7 @@ export default function HomePage() {
           across 5 major Indian states sourced directly from data.gov.in.
         </p>
 
-        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
           <button className="btn btn-primary" onClick={() => navigate('/playground')}>
             Explore Playground <ArrowRight size={16} />
           </button>
@@ -169,7 +169,7 @@ export default function HomePage() {
               Test live state payloads instantly from your browser
             </p>
           </div>
-          <div style={{ width: '220px' }}>
+          <div className="region-selector-wrap">
             <RegionSelector selectedState={selectedState} onSelectState={setSelectedState} />
           </div>
         </div>

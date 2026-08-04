@@ -36,7 +36,7 @@ export default function RegionSelector({ selectedState, onSelectState }) {
           justify: 'space-between',
           alignItems: 'center',
           padding: '0.65rem 0.85rem',
-          background: '#0d121f',
+          background: '#16231d',
           border: '1px solid var(--border-subtle)',
           borderRadius: '8px',
           color: '#fff',
@@ -46,7 +46,7 @@ export default function RegionSelector({ selectedState, onSelectState }) {
         }}
       >
         <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <MapPin size={16} color="var(--accent-emerald)" />
+          <MapPin size={16} color="var(--accent-gold)" />
           <span>{selectedState}</span>
         </span>
         <ChevronDown size={16} color="var(--text-secondary)" />
@@ -59,8 +59,8 @@ export default function RegionSelector({ selectedState, onSelectState }) {
           left: 0,
           right: 0,
           marginTop: '0.35rem',
-          background: '#121929',
-          border: '1px solid var(--border-emerald)',
+          background: '#1c2b22',
+          border: '1px solid var(--border-gold)',
           borderRadius: '10px',
           boxShadow: '0 10px 25px rgba(0,0,0,0.5)',
           zIndex: 50,
@@ -103,15 +103,15 @@ export default function RegionSelector({ selectedState, onSelectState }) {
                     alignItems: 'center',
                     padding: '0.55rem 0.85rem',
                     fontSize: '0.88rem',
-                    color: isSelected ? 'var(--accent-emerald)' : '#e5e7eb',
-                    background: isSelected ? 'rgba(16, 185, 129, 0.1)' : 'transparent',
+                    color: isSelected ? 'var(--accent-gold)' : '#ede6d6',
+                    background: isSelected ? 'rgba(216, 155, 60, 0.1)' : 'transparent',
                     cursor: 'pointer'
                   }}
                   onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.06)'}
-                  onMouseLeave={(e) => e.currentTarget.style.background = isSelected ? 'rgba(16, 185, 129, 0.1)' : 'transparent'}
+                  onMouseLeave={(e) => e.currentTarget.style.background = isSelected ? 'rgba(216, 155, 60, 0.1)' : 'transparent'}
                 >
                   <span>{state}</span>
-                  {isSelected && <Check size={14} color="var(--accent-emerald)" />}
+                  {isSelected && <Check size={14} color="var(--accent-gold)" />}
                 </div>
               );
             })}

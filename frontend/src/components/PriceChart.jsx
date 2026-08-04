@@ -45,18 +45,18 @@ export default function PriceChart({ historyData, commodity, state }) {
       {
         label: 'Modal Price (₹/Quintal)',
         data: modalPrices,
-        borderColor: '#10b981',
-        backgroundColor: 'rgba(16, 185, 129, 0.15)',
+        borderColor: '#d89b3c',
+        backgroundColor: 'rgba(216, 155, 60, 0.15)',
         borderWidth: 3,
         fill: true,
         tension: 0.3,
-        pointBackgroundColor: '#10b981',
+        pointBackgroundColor: '#d89b3c',
         pointRadius: 4
       },
       {
         label: 'Min Price (₹)',
         data: minPrices,
-        borderColor: '#06b6d4',
+        borderColor: '#b5502e',
         borderWidth: 1.5,
         borderDash: [4, 4],
         pointRadius: 0,
@@ -65,7 +65,7 @@ export default function PriceChart({ historyData, commodity, state }) {
       {
         label: 'Max Price (₹)',
         data: maxPrices,
-        borderColor: '#f59e0b',
+        borderColor: '#e8c468',
         borderWidth: 1.5,
         borderDash: [4, 4],
         pointRadius: 0,
@@ -81,25 +81,25 @@ export default function PriceChart({ historyData, commodity, state }) {
       legend: {
         position: 'top',
         labels: {
-          color: '#9ca3af',
+          color: '#b8ac97',
           font: { family: 'Plus Jakarta Sans', size: 12 }
         }
       },
       title: {
         display: true,
         text: `Daily Price Trends — ${commodity} (${state})`,
-        color: '#f3f4f6',
+        color: '#ede6d6',
         font: { family: 'Plus Jakarta Sans', size: 15, weight: '700' }
       }
     },
     scales: {
       x: {
         grid: { color: 'rgba(255, 255, 255, 0.05)' },
-        ticks: { color: '#9ca3af' }
+        ticks: { color: '#b8ac97' }
       },
       y: {
         grid: { color: 'rgba(255, 255, 255, 0.05)' },
-        ticks: { color: '#9ca3af' }
+        ticks: { color: '#b8ac97' }
       }
     }
   };

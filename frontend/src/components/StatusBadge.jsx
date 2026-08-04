@@ -49,13 +49,13 @@ export default function StatusBadge() {
   const getPillStyle = () => {
     switch (status) {
       case 'online':
-        return { bg: 'rgba(16, 185, 129, 0.1)', border: 'rgba(16, 185, 129, 0.3)', color: '#10b981', dot: '#10b981' };
+        return { bg: 'rgba(74, 222, 128, 0.1)', border: 'rgba(74, 222, 128, 0.3)', color: 'var(--status-online)', dot: 'var(--status-online)' };
       case 'sleeping':
-        return { bg: 'rgba(245, 158, 11, 0.15)', border: 'rgba(245, 158, 11, 0.4)', color: '#f59e0b', dot: '#f59e0b' };
+        return { bg: 'rgba(232, 196, 104, 0.15)', border: 'rgba(232, 196, 104, 0.4)', color: 'var(--status-warn)', dot: 'var(--status-warn)' };
       case 'offline':
-        return { bg: 'rgba(239, 68, 68, 0.1)', border: 'rgba(239, 68, 68, 0.3)', color: '#ef4444', dot: '#ef4444' };
+        return { bg: 'rgba(224, 101, 74, 0.1)', border: 'rgba(224, 101, 74, 0.3)', color: 'var(--status-offline)', dot: 'var(--status-offline)' };
       default:
-        return { bg: 'rgba(255, 255, 255, 0.05)', border: 'rgba(255, 255, 255, 0.1)', color: '#9ca3af', dot: '#9ca3af' };
+        return { bg: 'rgba(255, 255, 255, 0.05)', border: 'rgba(255, 255, 255, 0.1)', color: '#b8ac97', dot: '#b8ac97' };
     }
   };
 

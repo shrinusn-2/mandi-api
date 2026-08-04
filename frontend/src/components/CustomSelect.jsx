@@ -45,7 +45,7 @@ export default function CustomSelect({
       {label && (
         <label style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.4rem', fontWeight: 600 }}>
           <span>{label}</span>
-          {loading && <RefreshCw size={12} className="spin" color="var(--accent-emerald)" />}
+          {loading && <RefreshCw size={12} className="spin" color="var(--accent-gold)" />}
         </label>
       )}
 
@@ -60,8 +60,8 @@ export default function CustomSelect({
           justify: 'space-between',
           alignItems: 'center',
           padding: '0.65rem 0.85rem',
-          background: '#0d121f',
-          border: isOpen ? '1px solid var(--accent-emerald)' : '1px solid var(--border-subtle)',
+          background: '#16231d',
+          border: isOpen ? '1px solid var(--accent-gold)' : '1px solid var(--border-subtle)',
           borderRadius: '8px',
           color: selectedOption ? '#fff' : 'var(--text-muted)',
           fontFamily: 'var(--font-sans)',
@@ -72,7 +72,7 @@ export default function CustomSelect({
         }}
       >
         <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
-          {Icon && <Icon size={16} color="var(--accent-emerald)" />}
+          {Icon && <Icon size={16} color="var(--accent-gold)" />}
           <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {selectedOption ? selectedOption.label : placeholder}
           </span>
@@ -88,8 +88,8 @@ export default function CustomSelect({
           left: 0,
           right: 0,
           marginTop: '0.35rem',
-          background: '#121929',
-          border: '1px solid var(--border-emerald)',
+          background: '#1c2b22',
+          border: '1px solid var(--border-gold)',
           borderRadius: '10px',
           boxShadow: '0 12px 30px rgba(0, 0, 0, 0.6)',
           zIndex: 100,
@@ -136,8 +136,8 @@ export default function CustomSelect({
                       alignItems: 'center',
                       padding: '0.6rem 0.85rem',
                       fontSize: '0.88rem',
-                      color: isSelected ? 'var(--accent-emerald)' : '#e5e7eb',
-                      background: isSelected ? 'rgba(16, 185, 129, 0.12)' : 'transparent',
+                      color: isSelected ? 'var(--accent-gold)' : '#ede6d6',
+                      background: isSelected ? 'rgba(216, 155, 60, 0.12)' : 'transparent',
                       cursor: 'pointer',
                       transition: 'background 0.15s ease'
                     }}
@@ -145,7 +145,7 @@ export default function CustomSelect({
                       if (!isSelected) e.currentTarget.style.background = 'rgba(255,255,255,0.06)';
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.background = isSelected ? 'rgba(16, 185, 129, 0.12)' : 'transparent';
+                      e.currentTarget.style.background = isSelected ? 'rgba(216, 155, 60, 0.12)' : 'transparent';
                     }}
                   >
                     <div>
@@ -156,7 +156,7 @@ export default function CustomSelect({
                         </div>
                       )}
                     </div>
-                    {isSelected && <Check size={14} color="var(--accent-emerald)" />}
+                    {isSelected && <Check size={14} color="var(--accent-gold)" />}
                   </div>
                 );
               })

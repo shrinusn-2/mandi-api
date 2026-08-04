@@ -71,7 +71,7 @@ export default function DocsPage() {
       </Helmet>
 
       {/* Sticky Navigation Sidebar with ScrollSpy */}
-      <aside style={{ position: 'sticky', top: '80px', background: '#0d121f', padding: '0.85rem', borderRadius: '12px', border: '1px solid var(--border-subtle)' }}>
+      <aside style={{ position: 'sticky', top: '80px', background: '#16231d', padding: '0.85rem', borderRadius: '12px', border: '1px solid var(--border-subtle)' }}>
         <h4 style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '0.6rem', paddingLeft: '0.5rem' }}>
           Documentation Nav
         </h4>
@@ -95,8 +95,8 @@ export default function DocsPage() {
                 fontSize: '0.82rem',
                 borderRadius: '6px',
                 border: 'none',
-                background: activeSection === item.id ? 'rgba(16, 185, 129, 0.15)' : 'transparent',
-                color: activeSection === item.id ? 'var(--accent-emerald)' : 'var(--text-secondary)',
+                background: activeSection === item.id ? 'rgba(216, 155, 60, 0.15)' : 'transparent',
+                color: activeSection === item.id ? 'var(--accent-gold)' : 'var(--text-secondary)',
                 fontWeight: activeSection === item.id ? 600 : 400,
                 transition: 'all 0.15s ease',
                 cursor: 'pointer'
@@ -121,7 +121,7 @@ export default function DocsPage() {
 
         {/* Overview & Base URL */}
         <section id="overview" className="glass-card" style={{ padding: '1.25rem' }}>
-          <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.5rem', color: 'var(--accent-emerald)' }}>
+          <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.5rem', color: 'var(--accent-gold)' }}>
             Base URL & Authentication
           </h3>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', marginBottom: '0.75rem' }}>
@@ -142,7 +142,7 @@ export default function DocsPage() {
         {/* GET /v1/states */}
         <section id="states" className="glass-card" style={{ padding: '1.25rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.5rem' }}>
-            <span style={{ background: '#10b981', color: '#090d16', padding: '0.15rem 0.5rem', borderRadius: '4px', fontWeight: 700, fontSize: '0.75rem' }}>
+            <span style={{ background: '#d89b3c', color: '#14201c', padding: '0.15rem 0.5rem', borderRadius: '4px', fontWeight: 700, fontSize: '0.75rem' }}>
               GET
             </span>
             <code style={{ fontSize: '1rem', fontWeight: 600 }}>/v1/states</code>
@@ -156,7 +156,7 @@ export default function DocsPage() {
         {/* GET /v1/commodities */}
         <section id="commodities" className="glass-card" style={{ padding: '1.25rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.5rem' }}>
-            <span style={{ background: '#10b981', color: '#090d16', padding: '0.15rem 0.5rem', borderRadius: '4px', fontWeight: 700, fontSize: '0.75rem' }}>
+            <span style={{ background: '#d89b3c', color: '#14201c', padding: '0.15rem 0.5rem', borderRadius: '4px', fontWeight: 700, fontSize: '0.75rem' }}>
               GET
             </span>
             <code style={{ fontSize: '1rem', fontWeight: 600 }}>/v1/commodities</code>
@@ -176,13 +176,13 @@ export default function DocsPage() {
             </thead>
             <tbody>
               <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                <td style={{ padding: '0.4rem 0', fontFamily: 'var(--font-mono)', color: 'var(--accent-cyan)' }}>state</td>
+                <td style={{ padding: '0.4rem 0', fontFamily: 'var(--font-mono)', color: 'var(--accent-rust)' }}>state</td>
                 <td>String</td>
                 <td>Optional</td>
                 <td>Filter commodities by state name (e.g. Maharashtra)</td>
               </tr>
               <tr>
-                <td style={{ padding: '0.4rem 0', fontFamily: 'var(--font-mono)', color: 'var(--accent-cyan)' }}>market</td>
+                <td style={{ padding: '0.4rem 0', fontFamily: 'var(--font-mono)', color: 'var(--accent-rust)' }}>market</td>
                 <td>String</td>
                 <td>Optional</td>
                 <td>Filter commodities by specific APMC market (e.g. Katol APMC)</td>
@@ -196,7 +196,7 @@ export default function DocsPage() {
         {/* GET /v1/markets */}
         <section id="markets" className="glass-card" style={{ padding: '1.25rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.5rem' }}>
-            <span style={{ background: '#10b981', color: '#090d16', padding: '0.15rem 0.5rem', borderRadius: '4px', fontWeight: 700, fontSize: '0.75rem' }}>
+            <span style={{ background: '#d89b3c', color: '#14201c', padding: '0.15rem 0.5rem', borderRadius: '4px', fontWeight: 700, fontSize: '0.75rem' }}>
               GET
             </span>
             <code style={{ fontSize: '1rem', fontWeight: 600 }}>/v1/markets</code>
@@ -216,7 +216,7 @@ export default function DocsPage() {
             </thead>
             <tbody>
               <tr>
-                <td style={{ padding: '0.4rem 0', fontFamily: 'var(--font-mono)', color: 'var(--accent-cyan)' }}>state</td>
+                <td style={{ padding: '0.4rem 0', fontFamily: 'var(--font-mono)', color: 'var(--accent-rust)' }}>state</td>
                 <td>String</td>
                 <td>Yes</td>
                 <td>Required state name (e.g. Uttar Pradesh)</td>
@@ -230,7 +230,7 @@ export default function DocsPage() {
         {/* GET /v1/prices */}
         <section id="prices" className="glass-card" style={{ padding: '1.25rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.5rem' }}>
-            <span style={{ background: '#10b981', color: '#090d16', padding: '0.15rem 0.5rem', borderRadius: '4px', fontWeight: 700, fontSize: '0.75rem' }}>
+            <span style={{ background: '#d89b3c', color: '#14201c', padding: '0.15rem 0.5rem', borderRadius: '4px', fontWeight: 700, fontSize: '0.75rem' }}>
               GET
             </span>
             <code style={{ fontSize: '1rem', fontWeight: 600 }}>/v1/prices</code>
@@ -244,7 +244,7 @@ export default function DocsPage() {
         {/* GET /v1/prices/history */}
         <section id="history" className="glass-card" style={{ padding: '1.25rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.5rem' }}>
-            <span style={{ background: '#10b981', color: '#090d16', padding: '0.15rem 0.5rem', borderRadius: '4px', fontWeight: 700, fontSize: '0.75rem' }}>
+            <span style={{ background: '#d89b3c', color: '#14201c', padding: '0.15rem 0.5rem', borderRadius: '4px', fontWeight: 700, fontSize: '0.75rem' }}>
               GET
             </span>
             <code style={{ fontSize: '1.1rem', fontWeight: 600 }}>/v1/prices/history</code>
@@ -257,7 +257,7 @@ export default function DocsPage() {
 
         {/* Errors & Rate Limits */}
         <section id="errors" className="glass-card" style={{ padding: '1.25rem' }}>
-          <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.5rem', color: '#ef4444' }}>
+          <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.5rem', color: '#e0654a' }}>
             Errors & Rate Limits
           </h3>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem', marginBottom: '0.75rem' }}>

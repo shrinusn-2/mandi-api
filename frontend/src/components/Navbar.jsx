@@ -15,7 +15,7 @@ export default function Navbar() {
     <header className="header-nav">
       <div className="container nav-container">
         <NavLink to="/" className="logo" style={{ cursor: 'pointer' }}>
-          <div className="logo-icon" style={{ overflow: 'hidden', width: '38px', height: '38px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
+          <div className="logo-icon" style={{ overflow: 'hidden', width: '38px', height: '38px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(216, 155, 60, 0.15)', border: '1px solid rgba(216, 155, 60, 0.3)' }}>
             <img
               src="/logo.png"
               alt="Mandi API Logo"
@@ -24,7 +24,7 @@ export default function Navbar() {
             />
           </div>
           <div>
-            <span>Mandi<span style={{ color: 'var(--accent-emerald)' }}>API</span></span>
+            <span>Mandi<span style={{ color: 'var(--accent-gold)' }}>API</span></span>
             <span className="logo-subtitle" style={{ fontSize: '0.75rem', display: 'block', color: 'var(--text-muted)', fontWeight: 500, lineHeight: 1 }}>
               v1 / Open Ag-Data
             </span>

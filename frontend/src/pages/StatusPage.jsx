@@ -64,7 +64,7 @@ export default function StatusPage() {
       {/* Metrics Grid */}
       <div className="grid-3" style={{ marginBottom: '2rem' }}>
         <div className="glass-card">
-          <div style={{ color: 'var(--accent-emerald)', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div style={{ color: 'var(--accent-gold)', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Activity size={22} />
             <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>RESPONSE LATENCY</span>
           </div>
@@ -77,7 +77,7 @@ export default function StatusPage() {
         </div>
 
         <div className="glass-card">
-          <div style={{ color: 'var(--accent-cyan)', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div style={{ color: 'var(--accent-rust)', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Zap size={22} />
             <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>RATE LIMIT THRESHOLD</span>
           </div>
@@ -121,7 +121,7 @@ export default function StatusPage() {
             </tr>
             <tr style={{ borderBottom: '1px solid var(--border-subtle)' }}>
               <td style={{ padding: '0.75rem 0', color: 'var(--text-muted)', fontWeight: 600 }}>Daily Ingestion Pipeline</td>
-              <td style={{ padding: '0.75rem 0', color: '#10b981', textAlign: 'right', fontWeight: 600 }}>Scheduled GitHub Actions (15:00 UTC)</td>
+              <td style={{ padding: '0.75rem 0', color: 'var(--status-online)', textAlign: 'right', fontWeight: 600 }}>Scheduled GitHub Actions (15:00 UTC)</td>
             </tr>
             <tr style={{ borderBottom: '1px solid var(--border-subtle)' }}>
               <td style={{ padding: '0.75rem 0', color: 'var(--text-muted)', fontWeight: 600 }}>Database Storage</td>

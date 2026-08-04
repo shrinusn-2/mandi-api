@@ -1,17 +1,25 @@
 :root {
-  --bg-dark: #090d16;
-  --bg-card: rgba(18, 25, 41, 0.7);
-  --bg-card-hover: rgba(26, 36, 59, 0.85);
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-emerald: rgba(16, 185, 129, 0.3);
-  --accent-emerald: #10b981;
-  --accent-emerald-glow: rgba(16, 185, 129, 0.25);
-  --accent-cyan: #06b6d4;
-  --accent-amber: #f59e0b;
-  --text-primary: #f3f4f6;
-  --text-secondary: #9ca3af;
-  --text-muted: #6b7280;
-  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  /* Mandi rate-board palette: a real APMC yard price board, not a SaaS gradient */
+  --bg-dark: #14201c;
+  --bg-card: rgba(28, 42, 34, 0.75);
+  --bg-card-hover: rgba(35, 51, 42, 0.9);
+  --border-subtle: rgba(237, 230, 214, 0.1);
+  --border-gold: rgba(216, 155, 60, 0.35);
+  --accent-gold: #d89b3c;
+  --accent-gold-glow: rgba(216, 155, 60, 0.25);
+  --accent-rust: #b5502e;
+  --accent-amber: #d89b3c;
+  --text-primary: #ede6d6;
+  --text-secondary: #b8ac97;
+  --text-muted: #7d735f;
+
+  /* Semantic status colors (kept separate from the brand accent) */
+  --status-online: #4ade80;
+  --status-warn: #e8c468;
+  --status-offline: #e0654a;
+
+  --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Big Shoulders Display', var(--font-sans);
   --font-mono: 'JetBrains Mono', monospace;
 }
 
@@ -29,23 +37,36 @@ body {
   line-height: 1.6;
   overflow-x: hidden;
   background-image: 
-    radial-gradient(circle at 15% 15%, rgba(16, 185, 129, 0.07) 0%, transparent 40%),
-    radial-gradient(circle at 85% 85%, rgba(6, 182, 212, 0.07) 0%, transparent 40%);
+    radial-gradient(circle at 15% 15%, rgba(216, 155, 60, 0.07) 0%, transparent 40%),
+    radial-gradient(circle at 85% 85%, rgba(181, 80, 46, 0.07) 0%, transparent 40%);
   background-attachment: fixed;
 }
 
 a {
-  color: var(--accent-emerald);
+  color: var(--accent-gold);
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 a:hover {
-  color: #34d399;
+  color: #e2ad5c;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 code, pre {
   font-family: var(--font-mono);
+}
+
+.eyebrow {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
 }
 
 button {
@@ -62,17 +83,17 @@ button {
 /* Glassmorphism Card */
 .glass-card {
   background: var(--bg-card);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   border: 1px solid var(--border-subtle);
-  border-radius: 16px;
+  border-radius: 10px;
   padding: 1.5rem;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .glass-card:hover {
-  border-color: rgba(16, 185, 129, 0.2);
-  box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.5);
+  border-color: rgba(216, 155, 60, 0.25);
+  box-shadow: 0 8px 20px -6px rgba(0, 0, 0, 0.45);
 }
 
 /* Header & Nav */
@@ -80,7 +101,7 @@ button {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(9, 13, 22, 0.85);
+  background: rgba(20, 32, 28, 0.85);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border-subtle);
   padding: 1rem 0;
@@ -104,20 +125,20 @@ button {
 }
 
 .logo-icon {
-  background: linear-gradient(135deg, var(--accent-emerald), var(--accent-cyan));
+  background: linear-gradient(135deg, var(--accent-gold), var(--accent-rust));
   padding: 0.5rem;
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #090d16;
+  color: #14201c;
 }
 
 .nav-links {
   display: flex;
   gap: 0.5rem;
   align-items: center;
-  background: rgba(13, 18, 31, 0.6);
+  background: rgba(28, 42, 34, 0.6);
   padding: 0.3rem;
   border-radius: 12px;
   border: 1px solid var(--border-subtle);
@@ -197,9 +218,9 @@ button {
 
 .nav-link.active {
   color: #ffffff;
-  background: rgba(16, 185, 129, 0.2);
-  border-color: rgba(16, 185, 129, 0.4);
-  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.15);
+  background: rgba(216, 155, 60, 0.2);
+  border-color: rgba(216, 155, 60, 0.4);
+  box-shadow: 0 2px 10px rgba(216, 155, 60, 0.15);
 }
 
 /* Status Badge */
@@ -211,17 +232,17 @@ button {
   border-radius: 9999px;
   font-size: 0.85rem;
   font-weight: 600;
-  background: rgba(16, 185, 129, 0.1);
-  border: 1px solid var(--border-emerald);
-  color: var(--accent-emerald);
+  background: rgba(216, 155, 60, 0.1);
+  border: 1px solid var(--border-gold);
+  color: var(--accent-gold);
 }
 
 .status-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: var(--accent-emerald);
-  box-shadow: 0 0 10px var(--accent-emerald);
+  background-color: var(--accent-gold);
+  box-shadow: 0 0 10px var(--accent-gold);
   animation: pulse 2s infinite;
 }
 
@@ -255,16 +276,16 @@ button {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: linear-gradient(135deg, #d89b3c, #b5502e);
   color: #fff;
-  box-shadow: 0 4px 20px var(--accent-emerald-glow);
-  border: 1px solid rgba(16, 185, 129, 0.4);
+  box-shadow: 0 4px 20px var(--accent-gold-glow);
+  border: 1px solid rgba(216, 155, 60, 0.4);
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #34d399, #10b981);
+  background: linear-gradient(135deg, #e2ad5c, #d89b3c);
   transform: translateY(-1px);
-  box-shadow: 0 6px 24px var(--accent-emerald-glow);
+  box-shadow: 0 6px 24px var(--accent-gold-glow);
 }
 
 .btn-secondary {
@@ -280,7 +301,7 @@ button {
 
 /* Code Snippet Box */
 .code-box {
-  background: #0d121f;
+  background: #16231d;
   border: 1px solid var(--border-subtle);
   border-radius: 12px;
   overflow: hidden;
@@ -319,8 +340,8 @@ button {
 
 .code-tab.active {
   color: #ffffff;
-  background: rgba(16, 185, 129, 0.25);
-  border-color: rgba(16, 185, 129, 0.4);
+  background: rgba(216, 155, 60, 0.25);
+  border-color: rgba(216, 155, 60, 0.4);
   font-weight: 600;
 }
 
@@ -346,7 +367,7 @@ button {
   padding: 1rem;
   font-family: var(--font-mono);
   font-size: 0.88rem;
-  color: #e5e7eb;
+  color: #ede6d6;
   overflow-x: auto;
   white-space: pre-wrap;
   line-height: 1.5;
@@ -400,4 +421,74 @@ button {
   .region-selector-wrap {
     width: 100%;
   }
+}
+
+/* Rate Board: the hero signature element, styled like a physical APMC
+   mandi price board rather than a generic dashboard card */
+.rate-board {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.rate-board-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border-subtle);
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.rate-board-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.rate-board-row:last-child {
+  border-bottom: none;
+}
+
+.rate-board-commodity {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rate-board-market {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rate-board-price {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--accent-gold);
+  font-size: 1.05rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.stat-tile-value {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 4vw, 2.8rem);
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
 }

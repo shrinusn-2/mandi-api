@@ -45,7 +45,7 @@ export default function CodeSnippet({ path, url }) {
           ))}
         </div>
         <button className="copy-btn" onClick={handleCopy}>
-          {copied ? <Check size={14} color="#10b981" /> : <Copy size={14} />}
+          {copied ? <Check size={14} color="var(--status-online)" /> : <Copy size={14} />}
           <span>{copied ? 'Copied!' : 'Copy'}</span>
         </button>
       </div>

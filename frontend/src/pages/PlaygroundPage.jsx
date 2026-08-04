@@ -201,7 +201,7 @@ export default function PlaygroundPage() {
         {/* Left Column: Compact Request Controls */}
         <div className="glass-card" style={{ padding: '1.25rem' }}>
           <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            <Filter size={16} color="var(--accent-emerald)" /> Request Builder
+            <Filter size={16} color="var(--accent-gold)" /> Request Builder
           </h3>
 
           {/* Endpoint Selector */}
@@ -284,7 +284,7 @@ export default function PlaygroundPage() {
             display: 'flex',
             justify: 'space-between',
             alignItems: 'center',
-            background: '#0d121f',
+            background: '#16231d',
             padding: '0.65rem 1rem',
             borderBottom: '1px solid var(--border-subtle)',
             flexWrap: 'wrap',
@@ -292,13 +292,13 @@ export default function PlaygroundPage() {
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
               <div style={{ display: 'flex', gap: '0.35rem' }}>
-                <div style={{ width: 9, height: 9, borderRadius: '50%', background: '#ef4444' }} />
-                <div style={{ width: 9, height: 9, borderRadius: '50%', background: '#f59e0b' }} />
-                <div style={{ width: 9, height: 9, borderRadius: '50%', background: '#10b981' }} />
+                <div style={{ width: 9, height: 9, borderRadius: '50%', background: '#e0654a' }} />
+                <div style={{ width: 9, height: 9, borderRadius: '50%', background: '#e8c468' }} />
+                <div style={{ width: 9, height: 9, borderRadius: '50%', background: 'var(--status-online)' }} />
               </div>
 
               <span style={{ fontSize: '0.82rem', color: '#fff', fontWeight: 700, fontFamily: 'var(--font-mono)', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                <Terminal size={14} color="var(--accent-emerald)" /> Output Console
+                <Terminal size={14} color="var(--accent-gold)" /> Output Console
               </span>
 
               {responseStatus && (
@@ -307,9 +307,9 @@ export default function PlaygroundPage() {
                   fontWeight: 700,
                   padding: '0.15rem 0.5rem',
                   borderRadius: '5px',
-                  background: responseStatus === 200 ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)',
-                  color: responseStatus === 200 ? '#10b981' : '#ef4444',
-                  border: `1px solid ${responseStatus === 200 ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)'}`
+                  background: responseStatus === 200 ? 'rgba(74, 222, 128, 0.15)' : 'rgba(224, 101, 74, 0.15)',
+                  color: responseStatus === 200 ? 'var(--status-online)' : 'var(--status-offline)',
+                  border: `1px solid ${responseStatus === 200 ? 'rgba(74, 222, 128, 0.3)' : 'rgba(224, 101, 74, 0.3)'}`
                 }}>
                   HTTP {responseStatus}
                 </span>
@@ -358,9 +358,9 @@ export default function PlaygroundPage() {
                 gap: '0.4rem',
                 padding: '0.35rem 0.75rem',
                 borderRadius: '6px',
-                background: 'rgba(16, 185, 129, 0.1)',
-                border: '1px solid rgba(16, 185, 129, 0.3)',
-                color: '#10b981',
+                background: 'rgba(216, 155, 60, 0.1)',
+                border: '1px solid rgba(216, 155, 60, 0.3)',
+                color: '#d89b3c',
                 fontSize: '0.8rem',
                 fontWeight: 600,
                 marginBottom: '0.85rem'
@@ -378,9 +378,9 @@ export default function PlaygroundPage() {
                 gap: '0.5rem',
                 padding: '0.6rem 0.85rem',
                 borderRadius: '6px',
-                background: 'rgba(245, 158, 11, 0.1)',
-                border: '1px solid rgba(245, 158, 11, 0.3)',
-                color: '#f59e0b',
+                background: 'rgba(232, 196, 104, 0.1)',
+                border: '1px solid rgba(232, 196, 104, 0.3)',
+                color: '#e8c468',
                 fontSize: '0.82rem',
                 marginBottom: '0.85rem',
                 animation: 'pulse 2s infinite'
@@ -392,7 +392,7 @@ export default function PlaygroundPage() {
 
             {loading ? (
               <div style={{ textAlign: 'center', padding: '3rem 1rem' }}>
-                <RefreshCw size={24} className="spin" color="var(--accent-emerald)" style={{ margin: '0 auto 0.75rem auto', display: 'block' }} />
+                <RefreshCw size={24} className="spin" color="var(--accent-gold)" style={{ margin: '0 auto 0.75rem auto', display: 'block' }} />
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.88rem' }}>Querying Mandi Price API server...</p>
               </div>
             ) : activeTab === 'json' ? (

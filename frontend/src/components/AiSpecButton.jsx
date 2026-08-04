@@ -25,8 +25,8 @@ export default function AiSpecButton() {
 
   return (
     <div style={{
-      background: 'rgba(16, 185, 129, 0.08)',
-      border: '1px solid rgba(16, 185, 129, 0.3)',
+      background: 'rgba(216, 155, 60, 0.08)',
+      border: '1px solid rgba(216, 155, 60, 0.3)',
       borderRadius: '12px',
       padding: '1.25rem 1.5rem',
       display: 'flex',
@@ -38,10 +38,10 @@ export default function AiSpecButton() {
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
         <div style={{
-          background: 'rgba(16, 185, 129, 0.2)',
+          background: 'rgba(216, 155, 60, 0.2)',
           padding: '0.6rem',
           borderRadius: '10px',
-          color: 'var(--accent-emerald)',
+          color: 'var(--accent-gold)',
           display: 'flex'
         }}>
           <Sparkles size={20} />

@@ -19,6 +19,7 @@
     "react-router-dom": "^7.18.2"
   },
   "devDependencies": {
+    "@sparticuz/chromium": "^147.0.0",
     "@vitejs/plugin-react": "^4.3.4",
     "puppeteer": "^25.5.0",
     "vite": "^6.1.0"

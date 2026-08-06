@@ -158,30 +158,32 @@ export default function DocsPage() {
             Returns a list of distinct commodities/crops. Optionally scoped to a specific state or market.
           </p>
 
-          <table style={{ width: '100%', margin: '0.75rem 0', fontSize: '0.85rem', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr style={{ borderBottom: '1px solid var(--border-subtle)', textAlign: 'left', color: 'var(--text-muted)' }}>
-                <th style={{ padding: '0.4rem 0' }}>Parameter</th>
-                <th>Type</th>
-                <th>Required</th>
-                <th>Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-                <td style={{ padding: '0.4rem 0', fontFamily: 'var(--font-mono)', color: 'var(--accent-rust)' }}>state</td>
-                <td>String</td>
-                <td>Optional</td>
-                <td>Filter commodities by state name (e.g. Maharashtra)</td>
-              </tr>
-              <tr>
-                <td style={{ padding: '0.4rem 0', fontFamily: 'var(--font-mono)', color: 'var(--accent-rust)' }}>market</td>
-                <td>String</td>
-                <td>Optional</td>
-                <td>Filter commodities by specific APMC market (e.g. Katol APMC)</td>
-              </tr>
-            </tbody>
-          </table>
+          <div style={{ overflowX: 'auto', margin: '0.75rem 0' }}>
+            <table style={{ width: '100%', fontSize: '0.85rem', borderCollapse: 'collapse' }}>
+              <thead>
+                <tr style={{ borderBottom: '1px solid var(--border-subtle)', textAlign: 'left', color: 'var(--text-muted)' }}>
+                  <th style={{ padding: '0.4rem 0' }}>Parameter</th>
+                  <th>Type</th>
+                  <th>Required</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                  <td style={{ padding: '0.4rem 0', fontFamily: 'var(--font-mono)', color: 'var(--accent-rust)' }}>state</td>
+                  <td>String</td>
+                  <td>Optional</td>
+                  <td>Filter commodities by state name (e.g. Maharashtra)</td>
+                </tr>
+                <tr>
+                  <td style={{ padding: '0.4rem 0', fontFamily: 'var(--font-mono)', color: 'var(--accent-rust)' }}>market</td>
+                  <td>String</td>
+                  <td>Optional</td>
+                  <td>Filter commodities by specific APMC market (e.g. Katol APMC)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
           <CodeSnippet path="/v1/commodities?state=Maharashtra" />
         </section>
@@ -196,24 +198,26 @@ export default function DocsPage() {
             Returns list of all active mandis/markets in a state.
           </p>
 
-          <table style={{ width: '100%', margin: '0.75rem 0', fontSize: '0.85rem', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr style={{ borderBottom: '1px solid var(--border-subtle)', textAlign: 'left', color: 'var(--text-muted)' }}>
-                <th style={{ padding: '0.4rem 0' }}>Parameter</th>
-                <th>Type</th>
-                <th>Required</th>
-                <th>Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td style={{ padding: '0.4rem 0', fontFamily: 'var(--font-mono)', color: 'var(--accent-rust)' }}>state</td>
-                <td>String</td>
-                <td>Yes</td>
-                <td>Required state name (e.g. Uttar Pradesh)</td>
-              </tr>
-            </tbody>
-          </table>
+          <div style={{ overflowX: 'auto', margin: '0.75rem 0' }}>
+            <table style={{ width: '100%', fontSize: '0.85rem', borderCollapse: 'collapse' }}>
+              <thead>
+                <tr style={{ borderBottom: '1px solid var(--border-subtle)', textAlign: 'left', color: 'var(--text-muted)' }}>
+                  <th style={{ padding: '0.4rem 0' }}>Parameter</th>
+                  <th>Type</th>
+                  <th>Required</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style={{ padding: '0.4rem 0', fontFamily: 'var(--font-mono)', color: 'var(--accent-rust)' }}>state</td>
+                  <td>String</td>
+                  <td>Yes</td>
+                  <td>Required state name (e.g. Uttar Pradesh)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
           <CodeSnippet path="/v1/markets?state=Uttar Pradesh" />
         </section>

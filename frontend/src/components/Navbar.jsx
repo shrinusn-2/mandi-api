@@ -48,17 +48,19 @@ export default function Navbar() {
           </NavLink>
         </nav>
 
-        <button
-          type="button"
-          className="nav-toggle"
-          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-          aria-expanded={menuOpen}
-          onClick={() => setMenuOpen((open) => !open)}
-        >
-          {menuOpen ? <X size={20} /> : <Menu size={20} />}
-        </button>
+        <div className="nav-right-cluster">
+          <button
+            type="button"
+            className="nav-toggle"
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((open) => !open)}
+          >
+            {menuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
 
-        <StatusBadge />
+          <StatusBadge />
+        </div>
       </div>
     </header>
   );

@@ -154,6 +154,12 @@ button {
   border-radius: 8px;
 }
 
+.nav-right-cluster {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
 @media (max-width: 720px) {
   .nav-toggle {
     display: flex;
@@ -410,7 +416,12 @@ button {
 
 @media (max-width: 768px) {
   .sidebar-grid, .console-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sidebar-grid > *,
+  .console-grid > * {
+    min-width: 0;
   }
 }
 

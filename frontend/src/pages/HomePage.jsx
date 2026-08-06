@@ -138,7 +138,7 @@ export default function HomePage() {
         ) : boardRows.length > 0 ? (
           boardRows.map((row) => (
             <div className="rate-board-row" key={row.id}>
-              <div style={{ minWidth: 0 }}>
+              <div style={{ minWidth: 0, flex: '1 1 0%' }}>
                 <div className="rate-board-commodity">{row.commodity}</div>
                 <div className="rate-board-market">{row.market}, {row.district}</div>
               </div>

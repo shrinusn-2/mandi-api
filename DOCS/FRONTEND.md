@@ -27,7 +27,7 @@ frontend/
 │   └── prerender.js            # Postbuild: prerenders each route to static HTML, generates sitemap.xml/robots.txt
 ├── src/
 │   ├── components/
-│   │   ├── Navbar.jsx          # Top nav; collapses to a hamburger menu below 720px
+│   │   ├── Navbar.jsx          # Top nav; collapses to a hamburger menu below 720px (hamburger + StatusBadge share a `.nav-right-cluster` flex group so they render together, not centered)
 │   │   ├── StatusBadge.jsx     # Live health checker & latency ping (with warm-up detection)
 │   │   ├── CustomSelect.jsx    # Searchable dropdown with search bar & checkmarks
 │   │   ├── RegionSelector.jsx  # Thin wrapper around CustomSelect, preset to the supported states list
@@ -104,6 +104,14 @@ frontend/
 ### `CodeSnippet.jsx`
 - Multi-language snippet generator for **cURL**, **JavaScript (fetch)**, **Python (requests)**, and **Go (net/http)**.
 - One-click copy to clipboard with feedback animation.
+
+### Mobile Layout Fixes (index.css, Navbar.jsx, HomePage.jsx, DocsPage.jsx)
+- Verified live at a 412px viewport (Chrome iframe probe measuring `scrollWidth`) that the site required pinch-zoom to read on phones. Root causes and fixes, in case similar layout code is added elsewhere:
+  - **`.nav-container`** is `display:flex; justify-content:space-between`. Below 720px `.nav-links` disappears, leaving 3 flex items (logo, hamburger, status pill) — `space-between` centered the hamburger instead of pairing it with the pill. Fixed by wrapping the hamburger button + `<StatusBadge/>` in `.nav-right-cluster` so there are always exactly 2 groups.
+  - **`.rate-board-row`** (HomePage rate board): the commodity/market text wrapper had `minWidth:0` but no explicit shrinkable `flex-basis`, so long real market names rendered at full content width and blew out the page instead of ellipsizing (the ellipsis CSS on `.rate-board-commodity`/`.rate-board-market` was already correct, just never got a bounded parent). Fixed by adding `flex: '1 1 0%'` alongside `minWidth: 0`.
+  - **`.sidebar-grid` / `.console-grid`** (Docs sidebar, Playground console): the `@media (max-width:768px)` override set `grid-template-columns: 1fr`, but CSS Grid's implicit auto-min-size still let wide content (the Docs scroll-spy nav) force the column past the viewport. Fixed with `minmax(0, 1fr)` + `min-width:0` on the grid children — this is the standard fix for that CSS Grid gotcha.
+  - Docs' two parameter `<table>`s (`/v1/commodities`, `/v1/markets`) had no horizontal-scroll wrapper, unlike the blog post tables (`pages/blog/posts/DataGovInVsMandiApi.jsx`). Wrapped both in `overflowX:auto` divs as a preventive measure.
+- Desktop (≥768px/720px) is unaffected by all of the above — only the mobile media-query paths changed.
 
 ---
 

@@ -123,4 +123,4 @@ mandi-api/
 
 ## 6. License & Attribution
 
-This project is licensed under **CC BY-NC-SA 4.0** (Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International). Copyright (c) 2026 shrinusn-2.
+This project is licensed under **CC BY-NC-SA 4.0** (Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International). Copyright (c) 2026 shrinivas-sn.

@@ -25,7 +25,7 @@ const STRUCTURED_DATA = {
       name: 'Mandi Price API',
       url: SITE_URL,
       logo: `${SITE_URL}/logo.png`,
-      sameAs: ['https://github.com/shrinusn-2/mandi-api']
+      sameAs: ['https://github.com/shrinivas-sn/mandi-api']
     },
     {
       '@type': 'SoftwareApplication',

@@ -2,7 +2,7 @@
 
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC_BY--NC--SA_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 
-Originally created by shrinusn-2 — first released July 2026. Open for community use and contribution under the license below.
+Originally created by shrinivas-sn — first released July 2026. Open for community use and contribution under the license below.
 
 Free, open, keyless REST API serving daily agricultural mandi (wholesale market) prices across 5 major Indian states, sourced from the Government of India's open data portal (`data.gov.in`).
 

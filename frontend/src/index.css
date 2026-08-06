@@ -493,3 +493,61 @@ button {
   color: var(--text-primary);
   line-height: 1;
 }
+
+/* Long-form article body (blog posts) — the only place on the site with
+   prose-length content, so it gets its own spacing rules instead of every
+   paragraph needing inline styles like the rest of the app. */
+.article-body {
+  color: var(--text-secondary);
+  font-size: 1.02rem;
+}
+
+.article-body h2 {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin: 2.5rem 0 1rem;
+}
+
+.article-body h3 {
+  font-size: 1.15rem;
+  color: var(--text-primary);
+  margin: 1.75rem 0 0.75rem;
+}
+
+.article-body p {
+  margin-bottom: 1.1rem;
+}
+
+.article-body ul,
+.article-body ol {
+  margin: 0 0 1.1rem 1.4rem;
+}
+
+.article-body li {
+  margin-bottom: 0.4rem;
+}
+
+.article-body strong {
+  color: var(--text-primary);
+}
+
+.article-body code {
+  background: var(--bg-recessed);
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  padding: 0.1rem 0.4rem;
+  font-size: 0.9em;
+  color: var(--accent-gold);
+}
+
+.article-body .code-box {
+  margin: 1.5rem 0;
+}
+
+.article-body blockquote {
+  border-left: 3px solid var(--border-gold);
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  color: var(--text-muted);
+  font-style: italic;
+}

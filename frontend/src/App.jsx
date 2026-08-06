@@ -6,6 +6,8 @@ import PlaygroundPage from './pages/PlaygroundPage';
 import DocsPage from './pages/DocsPage';
 import StatusPage from './pages/StatusPage';
 import NotFoundPage from './pages/NotFoundPage';
+import BlogIndexPage from './pages/blog/BlogIndexPage';
+import BlogPostPage from './pages/blog/BlogPostPage';
 import { ROUTES } from './routes';
 
 const PAGE_COMPONENTS = {
@@ -26,6 +28,8 @@ export default function App() {
             const Component = PAGE_COMPONENTS[path];
             return <Route key={path} path={path} element={<Component />} />;
           })}
+          <Route path="/blog" element={<BlogIndexPage />} />
+          <Route path="/blog/:slug" element={<BlogPostPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>

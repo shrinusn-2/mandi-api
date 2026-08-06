@@ -5,13 +5,19 @@ import { mkdirSync, writeFileSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { ROUTES } from '../src/routes.js';
+import { BLOG_INDEX_ROUTE, BLOG_POSTS } from '../src/blogRoutes.js';
 import { SITE_URL } from '../src/config.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const distDir = join(__dirname, '..', 'dist');
 
+// Combined so the sitemap and prerender loop cover the app's 4 static routes
+// plus the blog index + every post, without either list needing to know
+// about the other.
+const ALL_ROUTES = [...ROUTES, BLOG_INDEX_ROUTE, ...BLOG_POSTS];
+
 function writeSitemap() {
-  const urls = ROUTES.map(({ path, changefreq, priority }) => `  <url>
+  const urls = ALL_ROUTES.map(({ path, changefreq, priority }) => `  <url>
     <loc>${SITE_URL}${path}</loc>
     <changefreq>${changefreq}</changefreq>
     <priority>${priority}</priority>
@@ -81,7 +87,7 @@ async function main() {
       // timeout) shouldn't take the rest of the build down with it — the
       // route just keeps vite build's plain SPA shell instead of a
       // prerendered snapshot, and the build still succeeds.
-      for (const route of ROUTES) {
+      for (const route of ALL_ROUTES) {
         try {
           await prerenderRoute(browser, base, route.path);
         } catch (err) {

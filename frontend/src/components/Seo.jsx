@@ -10,6 +10,7 @@ export default function Seo({ title, description, path, structuredData, noindex 
       <title>{title}</title>
       <meta name="description" content={description} />
       <link rel="canonical" href={url} />
+      <meta property="og:site_name" content="Mandi Price API" />
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
       <meta property="og:url" content={url} />

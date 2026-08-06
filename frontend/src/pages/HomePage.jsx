@@ -21,6 +21,13 @@ const STRUCTURED_DATA = {
       description: PAGE_DESCRIPTION
     },
     {
+      '@type': 'Organization',
+      name: 'Mandi Price API',
+      url: SITE_URL,
+      logo: `${SITE_URL}/logo.png`,
+      sameAs: ['https://github.com/shrinusn-2/mandi-api']
+    },
+    {
       '@type': 'SoftwareApplication',
       name: 'Mandi Price API',
       applicationCategory: 'DeveloperApplication',
@@ -178,9 +185,9 @@ export default function HomePage() {
 
       {/* Quick Start Code Section */}
       <div style={{ maxWidth: '900px', margin: '0 auto 4rem auto' }}>
-        <h3 style={{ marginBottom: '1rem', fontSize: '1.1rem', color: 'var(--text-secondary)' }}>
+        <h2 style={{ marginBottom: '1rem', fontSize: '1.1rem', color: 'var(--text-secondary)' }}>
           Quick Start Request
-        </h3>
+        </h2>
         <CodeSnippet path="/v1/prices?state=Maharashtra&commodity=Onion" />
       </div>
 
@@ -210,7 +217,7 @@ export default function HomePage() {
 
       {/* Supported States Pill List */}
       <div className="glass-card" style={{ textAlign: 'center', padding: '2rem' }}>
-        <h4 style={{ color: 'var(--text-secondary)', marginBottom: '1rem' }}>Supported States in v1</h4>
+        <h2 style={{ color: 'var(--text-secondary)', marginBottom: '1rem' }}>Supported States in v1</h2>
         <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
           {SUPPORTED_STATES.map(st => (
             <span key={st} style={{

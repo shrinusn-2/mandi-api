@@ -43,6 +43,9 @@ export default function Navbar() {
               {navLabel}
             </NavLink>
           ))}
+          <NavLink to="/blog" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
+            Blog
+          </NavLink>
         </nav>
 
         <button

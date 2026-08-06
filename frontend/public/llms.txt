@@ -1,0 +1,17 @@
+# Mandi Price API
+
+> Free, open, keyless REST API serving daily Indian mandi (wholesale market) crop prices across Maharashtra, Uttar Pradesh, Punjab, Madhya Pradesh, and Karnataka. Sourced from data.gov.in.
+
+Base URL: https://mandi-api.onrender.com/v1
+Authentication: None required (keyless, open API)
+Rate limit: 100 requests per 15 minutes per IP address
+
+## Docs
+
+- [API Documentation](https://mandi-api.vercel.app/docs): Full endpoint reference — /v1/states, /v1/commodities, /v1/markets, /v1/prices, /v1/prices/history — parameters, response envelopes, and error codes
+- [Interactive Playground](https://mandi-api.vercel.app/playground): Test live API requests in-browser, inspect JSON responses, plot price trend charts
+- [Service Status](https://mandi-api.vercel.app/status): Live uptime, latency, and daily ingestion pipeline health
+
+## Optional
+
+- [Service Overview](https://mandi-api.vercel.app/): Homepage with live rate board and quick-start request example

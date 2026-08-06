@@ -8,8 +8,8 @@ This document details the complete frontend application architecture, design sys
 
 - **Directory**: `frontend/`
 - **Framework**: React 18 + Vite 6
-- **Routing**: `react-router-dom` (real per-page URLs: `/`, `/playground`, `/docs`, `/status`, plus a `*` 404 route)
-- **SEO**: `react-helmet-async` for per-page metadata, JSON-LD structured data, plus a Puppeteer-based build-time static-prerender step (`scripts/prerender.js`)
+- **Routing**: `react-router-dom` (real per-page URLs: `/`, `/playground`, `/docs`, `/status`, `/blog`, `/blog/:slug`, plus a `*` 404 route)
+- **SEO**: `react-helmet-async` for per-page metadata (including `og:site_name`) and JSON-LD structured data (`WebSite` + `Organization` + `SoftwareApplication` on the homepage, `BlogPosting` on blog posts), plus a Puppeteer-based build-time static-prerender step (`scripts/prerender.js`) and `public/llms.txt` for AI-agent discoverability
 - **Styling**: Vanilla CSS (`src/index.css`) — an earthy/harvest "mandi rate-board" design system (slate-green base, turmeric-gold/rust accents) with custom CSS tokens
 - **Icons**: `lucide-react`
 - **Charts**: `chart.js` + `react-chartjs-2`
@@ -43,8 +43,14 @@ frontend/
 │   │   ├── PlaygroundPage.jsx  # High-density split console (no vertical scrolling)
 │   │   ├── DocsPage.jsx        # Complete API reference documentation with IntersectionObserver ScrollSpy
 │   │   ├── StatusPage.jsx      # System status & operational metrics dashboard
-│   │   └── NotFoundPage.jsx    # 404 page for the `*` route, marked noindex
-│   ├── routes.js               # Single route manifest: path, nav label, SEO title/description, sitemap priority
+│   │   ├── NotFoundPage.jsx    # 404 page for the `*` route, marked noindex
+│   │   └── blog/
+│   │       ├── BlogIndexPage.jsx   # /blog — lists all posts from blogRoutes.js
+│   │       ├── BlogPostPage.jsx    # /blog/:slug — looks up the post component by slug, renders via BlogPostLayout
+│   │       ├── BlogPostLayout.jsx  # Shared chrome: Seo + BlogPosting JSON-LD + title/date wrapper
+│   │       └── posts/              # One JSX file per article (no MDX dependency — plain component bodies)
+│   ├── routes.js               # Single route manifest: path, nav label, SEO title/description, sitemap priority (4 core app routes)
+│   ├── blogRoutes.js           # Same pattern as routes.js, JSX-free, for the blog index + posts (kept separate since posts are added independently of the core app routes)
 │   ├── utils.js                # Shared helpers (e.g. formatIngestionTime)
 │   ├── config.js               # API_BASE_URL / SITE_URL resolution — works under both Vite and plain Node (prerender.js)
 │   ├── App.jsx                 # react-router <Routes> shell, built from routes.js
@@ -59,10 +65,16 @@ frontend/
 
 ## 3. Key Components & Specifications
 
-### Routing & SEO (`routes.js`, `Seo.jsx`, `scripts/prerender.js`)
-- `routes.js` is the single source of truth for the 4 real routes — path, nav label, SEO title/description, and sitemap `changefreq`/`priority`. `App.jsx` and `Navbar.jsx` both derive from it, so adding a route only means editing this one file.
-- `Seo.jsx` is a shared `<Helmet>` wrapper each page calls with its title/description/path (and optional `structuredData`/`noindex`); collapses what used to be a repeated 10-line block per page.
-- `scripts/prerender.js` runs as an npm `postbuild` step after `vite build`: it launches a headless Chrome (via `puppeteer` locally, `@sparticuz/chromium` on Vercel — see §4), visits each route on a local `vite preview` server, and writes the fully-rendered HTML to `dist/<route>/index.html` so crawlers get real content instead of an empty shell. It also generates `dist/sitemap.xml` and `dist/robots.txt` from `routes.js` + `SITE_URL`. Each route prerenders independently (a single failure doesn't fail the build), and if Chrome can't launch at all, the script logs it and still ships the plain `vite build` SPA output rather than blocking the deploy.
+### Routing & SEO (`routes.js`, `blogRoutes.js`, `Seo.jsx`, `scripts/prerender.js`)
+- `routes.js` is the single source of truth for the 4 core app routes — path, nav label, SEO title/description, and sitemap `changefreq`/`priority`. `App.jsx` and `Navbar.jsx` both derive from it, so adding a route only means editing this one file.
+- `Seo.jsx` is a shared `<Helmet>` wrapper each page calls with its title/description/path (and optional `structuredData`/`noindex`); collapses what used to be a repeated 10-line block per page. Also sets `og:site_name` on every page — added specifically because Google was displaying "Vercel" instead of "Mandi Price API" as the SERP site name (no `og:site_name` + no `Organization` entity for it to attribute the site to).
+- `scripts/prerender.js` runs as an npm `postbuild` step after `vite build`: it launches a headless Chrome (via `puppeteer` locally, `@sparticuz/chromium` on Vercel — see §4), visits each route on a local `vite preview` server (now `ROUTES` + `BLOG_INDEX_ROUTE` + `BLOG_POSTS` combined), and writes the fully-rendered HTML to `dist/<route>/index.html` so crawlers get real content instead of an empty shell. It also generates `dist/sitemap.xml` and `dist/robots.txt` from the combined route list + `SITE_URL`. Each route prerenders independently (a single failure doesn't fail the build), and if Chrome can't launch at all, the script logs it and still ships the plain `vite build` SPA output rather than blocking the deploy.
+
+### Blog (`blogRoutes.js`, `pages/blog/`)
+- Added to target real search terms the site wasn't ranking for at all (it previously only surfaced for its own exact name). `blogRoutes.js` mirrors `routes.js`'s JSX-free pattern so it can be imported the same way by `prerender.js` under plain Node.
+- 3 launch articles (`pages/blog/posts/`): `agmarknet-api-alternative`, `apmc-mandi-price-data-guide`, `data-gov-in-vs-mandi-api` — each targets specific researched keywords and links to `/docs` + `/playground`.
+- `BlogPostPage.jsx` maps `:slug` → post component via a plain object lookup (`POST_COMPONENTS`) rather than dynamic imports, since there are only a handful of posts.
+- One article was also cross-posted to dev.to with `canonical_url` pointing back here (no duplicate-content penalty), and the site was submitted to `public-apis/public-apis` under the Government category for a backlink.
 
 ### `DocsPage.jsx`
 - **IntersectionObserver ScrollSpy**: Real-time active section tracking as the user scrolls down the page. The sticky sidebar navigation tab (`Overview`, `states`, `commodities`, `markets`, `prices`, `history`, `errors`) automatically updates and highlights based on viewport visibility.

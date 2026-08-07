@@ -160,11 +160,12 @@ export default function HomePage() {
             color: 'var(--text-muted)',
             fontSize: '0.78rem',
             display: 'flex',
-            alignItems: 'center',
-            gap: '0.4rem'
+            alignItems: 'flex-start',
+            gap: '0.4rem',
+            flexWrap: 'wrap'
           }}>
-            <Clock size={12} />
-            <span>Ingested {latestIngestTime} IST{recordCount != null ? ` · ${recordCount} records returned for ${selectedState}` : ''}</span>
+            <Clock size={12} style={{ flexShrink: 0, marginTop: '0.15rem' }} />
+            <span style={{ minWidth: 0, wordBreak: 'break-word' }}>Ingested {latestIngestTime} IST{recordCount != null ? ` · ${recordCount} records returned for ${selectedState}` : ''}</span>
           </div>
         )}
       </div>

@@ -427,9 +427,10 @@ button {
 
 .region-selector-wrap {
   width: 220px;
+  max-width: 100%;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
   .region-selector-wrap {
     width: 100%;
   }
@@ -453,6 +454,12 @@ button {
   padding: 1rem 1.25rem;
   border-bottom: 1px solid var(--border-subtle);
   background: rgba(0, 0, 0, 0.18);
+  min-width: 0;
+}
+
+.rate-board-header > div {
+  min-width: 0;
+  max-width: 100%;
 }
 
 .rate-board-row {
